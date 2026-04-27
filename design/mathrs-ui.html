@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="sr" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MathRS — Matematika za prijemni</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ─── Reset & Base ─────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #0d1117;
+  --bg2:       #161b22;
+  --bg3:       #21262d;
+  --border:    #30363d;
+  --border2:   #444c56;
+  --text:      #e6edf3;
+  --text2:     #8b949e;
+  --text3:     #6e7681;
+  --green:     #3fb950;
+  --green-bg:  #0d2217;
+  --green-dim: #196c2e;
+  --blue:      #58a6ff;
+  --blue-bg:   #0c1e35;
+  --orange:    #d29922;
+  --orange-bg: #2a1f00;
+  --red:       #f85149;
+  --red-bg:    #2d1117;
+  --purple:    #bc8cff;
+  --purple-bg: #1e1229;
+  --font-ui:   'DM Sans', sans-serif;
+  --font-disp: 'Syne', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --radius:    6px;
+  --radius-lg: 10px;
+  --transition: 150ms ease;
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+/* ─── Scrollbar ─────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+/* ─── Layout ────────────────────────────────────────────── */
+.layout { display: flex; flex-direction: column; min-height: 100vh; }
+
+/* ─── Topnav ─────────────────────────────────────────────── */
+.topnav {
+  display: flex; align-items: center; gap: 0;
+  height: 56px;
+  padding: 0 24px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 100;
+}
+
+.logo {
+  font-family: var(--font-disp);
+  font-size: 18px; font-weight: 800;
+  color: var(--text); letter-spacing: -.5px;
+  cursor: pointer; margin-right: 32px;
+  display: flex; align-items: center; gap: 6px;
+  text-decoration: none;
+}
+.logo-mark {
+  width: 26px; height: 26px; border-radius: 6px;
+  background: var(--green); display: flex; align-items: center;
+  justify-content: center; font-size: 14px; color: #000; font-weight: 800;
+}
+.logo span { color: var(--green); }
+
+.nav-links { display: flex; gap: 2px; }
+.nav-link {
+  padding: 6px 14px; border-radius: var(--radius);
+  font-size: 13px; color: var(--text2); cursor: pointer;
+  transition: color var(--transition), background var(--transition);
+  white-space: nowrap; font-weight: 400;
+  border: none; background: none;
+}
+.nav-link:hover { color: var(--text); background: var(--bg3); }
+.nav-link.active { color: var(--text); font-weight: 500; }
+
+.nav-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+.nav-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--blue-bg); border: 1px solid var(--blue);
+  color: var(--blue); display: flex; align-items: center;
+  justify-content: center; font-size: 12px; font-weight: 500;
+  cursor: pointer; font-family: var(--font-disp);
+}
+.streak-badge {
+  display: flex; align-items: center; gap: 6px;
+  padding: 4px 10px; border-radius: 99px;
+  border: 1px solid var(--orange); background: var(--orange-bg);
+  font-size: 12px; color: var(--orange); font-weight: 500;
+}
+.streak-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--orange);
+}
+
+/* ─── Main container ────────────────────────────────────── */
+.main { flex: 1; max-width: 1200px; margin: 0 auto; padding: 28px 24px; width: 100%; }
+
+/* ─── Pages ─────────────────────────────────────────────── */
+.page { display: none; }
+.page.active { display: block; }
+
+/* ─── Page: Topics ──────────────────────────────────────── */
+.topics-hero {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  margin-bottom: 24px; padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+.topics-hero-text h1 {
+  font-family: var(--font-disp); font-size: 24px; font-weight: 700;
+  letter-spacing: -.4px; margin-bottom: 6px;
+}
+.topics-hero-text p { color: var(--text2); font-size: 13px; }
+.hero-meta { display: flex; gap: 20px; }
+.hero-stat { text-align: right; }
+.hero-stat-n {
+  font-family: var(--font-mono); font-size: 22px; font-weight: 500; color: var(--green);
+}
+.hero-stat-l { font-size: 11px; color: var(--text3); margin-top: 1px; }
+
+.topic-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+  background: var(--border); border: 1px solid var(--border); border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.topic-card {
+  background: var(--bg2); padding: 18px 20px; cursor: pointer;
+  transition: background var(--transition);
+  position: relative;
+}
+.topic-card:hover { background: var(--bg3); }
+.topic-card.completed::after {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+  width: 2px; background: var(--green);
+}
+.tc-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+.tc-num {
+  font-family: var(--font-mono); font-size: 10px; color: var(--text3); font-weight: 500;
+}
+.diff-badge {
+  font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 99px;
+  font-family: var(--font-mono);
+}
+.diff-e { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-dim); }
+.diff-m { background: var(--orange-bg); color: var(--orange); border: 1px solid #5a3d00; }
+.diff-h { background: var(--red-bg); color: var(--red); border: 1px solid #5a1d1a; }
+
+.tc-name {
+  font-family: var(--font-disp); font-size: 14px; font-weight: 600;
+  margin-bottom: 3px; letter-spacing: -.2px;
+}
+.tc-sub { font-size: 11px; color: var(--text3); }
+.tc-bar { height: 2px; background: var(--border); border-radius: 1px; margin-top: 14px; }
+.tc-fill { height: 2px; background: var(--green); border-radius: 1px; transition: width .3s; }
+.tc-stats { display: flex; justify-content: space-between; margin-top: 6px; font-size: 10px; color: var(--text3); font-family: var(--font-mono); }
+
+/* ─── Page: Topic Detail ────────────────────────────────── */
+.topic-detail-header {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  margin-bottom: 24px;
+}
+.tdh-left h2 {
+  font-family: var(--font-disp); font-size: 22px; font-weight: 700;
+  letter-spacing: -.4px; margin-bottom: 8px;
+}
+.tdh-meta { display: flex; gap: 16px; font-size: 12px; color: var(--text2); }
+.tdh-meta span { display: flex; align-items: center; gap: 4px; }
+
+.theory-panel {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 20px; margin-bottom: 20px;
+}
+.theory-panel-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px;
+}
+.theory-panel h3 {
+  font-family: var(--font-disp); font-size: 14px; font-weight: 600;
+}
+.theory-label {
+  font-size: 10px; font-weight: 500; color: var(--blue); letter-spacing: .8px;
+  font-family: var(--font-mono); background: var(--blue-bg); padding: 2px 8px; border-radius: 99px;
+}
+.theory-body { font-size: 13px; color: var(--text2); line-height: 1.7; }
+.formula-block {
+  font-family: var(--font-mono); font-size: 13px;
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 12px 18px;
+  margin: 12px 0; color: var(--green); text-align: center; letter-spacing: .3px;
+}
+
+.prob-list-header {
+  display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;
+}
+.prob-list-header h3 { font-family: var(--font-disp); font-size: 14px; font-weight: 600; }
+.tab-pills { display: flex; gap: 4px; }
+.tab-pill {
+  padding: 4px 12px; border-radius: 99px; font-size: 12px;
+  border: 1px solid var(--border); background: none; color: var(--text2);
+  cursor: pointer; transition: all var(--transition);
+}
+.tab-pill:hover { border-color: var(--border2); color: var(--text); }
+.tab-pill.active { background: var(--bg3); color: var(--text); border-color: var(--border2); font-weight: 500; }
+
+.prob-table { border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+.prob-table-head {
+  display: grid; grid-template-columns: 32px 1fr 90px 90px 70px;
+  padding: 9px 16px; background: var(--bg3);
+  font-size: 11px; color: var(--text3); font-weight: 500; letter-spacing: .4px;
+  font-family: var(--font-mono); border-bottom: 1px solid var(--border);
+}
+.prob-row {
+  display: grid; grid-template-columns: 32px 1fr 90px 90px 70px;
+  padding: 11px 16px; border-bottom: 1px solid var(--border);
+  cursor: pointer; transition: background var(--transition); align-items: center;
+}
+.prob-row:last-child { border-bottom: none; }
+.prob-row:hover { background: var(--bg3); }
+.prob-row.solved .pr-title { color: var(--text2); }
+.pr-check { color: var(--green); font-size: 12px; font-family: var(--font-mono); }
+.pr-title { font-size: 13px; }
+.pr-topic-tag {
+  font-size: 10px; padding: 2px 8px; border-radius: 99px;
+  background: var(--bg3); color: var(--text2); border: 1px solid var(--border); width: fit-content;
+}
+.pr-acc { font-size: 12px; color: var(--text2); font-family: var(--font-mono); text-align: right; }
+
+/* ─── Page: Exercise (LeetCode split) ──────────────────── */
+.exercise-layout {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start;
+}
+
+.ex-left-panel {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); overflow: hidden;
+}
+.ex-panel-tabs {
+  display: flex; border-bottom: 1px solid var(--border); padding: 0 16px;
+}
+.ex-panel-tab {
+  padding: 12px 14px; font-size: 12px; font-weight: 500; color: var(--text2);
+  cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px;
+  transition: all var(--transition);
+}
+.ex-panel-tab:hover { color: var(--text); }
+.ex-panel-tab.active { color: var(--text); border-bottom-color: var(--orange); }
+
+.ex-problem-body { padding: 20px; }
+.ex-problem-title {
+  font-family: var(--font-disp); font-size: 18px; font-weight: 700;
+  letter-spacing: -.3px; margin-bottom: 14px;
+}
+.ex-meta-row { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+.ex-id { font-family: var(--font-mono); font-size: 11px; color: var(--text3); }
+.topic-tag {
+  font-size: 11px; padding: 3px 10px; border-radius: 99px;
+  background: var(--blue-bg); color: var(--blue); border: 1px solid #1a3a5c;
+}
+.source-tag {
+  font-size: 11px; color: var(--text3); margin-left: auto;
+  font-family: var(--font-mono);
+}
+
+.theory-callout {
+  background: var(--bg); border: 1px solid var(--border);
+  border-left: 3px solid var(--blue);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 14px 16px; margin-bottom: 18px;
+}
+.tc-label {
+  font-size: 10px; font-weight: 500; color: var(--blue); letter-spacing: .8px;
+  font-family: var(--font-mono); margin-bottom: 8px;
+}
+.tc-text { font-size: 12px; color: var(--text2); line-height: 1.65; }
+.tc-formula {
+  font-family: var(--font-mono); font-size: 12px; background: var(--bg2);
+  border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 8px 12px; margin-top: 8px; color: var(--green); text-align: center;
+}
+
+.prob-statement { font-size: 14px; line-height: 1.75; color: var(--text); margin-bottom: 4px; }
+.prob-eq {
+  font-family: var(--font-mono); font-size: 16px; font-weight: 500;
+  background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 14px 20px; text-align: center; margin: 14px 0; color: var(--text);
+  letter-spacing: .5px;
+}
+.prob-stats {
+  display: flex; gap: 16px; font-size: 11px; color: var(--text3);
+  font-family: var(--font-mono); margin-top: 10px;
+}
+
+/* right panel */
+.ex-right-panel { display: flex; flex-direction: column; gap: 10px; }
+
+.ex-info-card {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.ex-info-title {
+  font-size: 10px; font-weight: 500; color: var(--text3); letter-spacing: .6px;
+  padding: 10px 16px; background: var(--bg3); border-bottom: 1px solid var(--border);
+  font-family: var(--font-mono);
+}
+.ex-info-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 9px 16px; border-bottom: 1px solid var(--border); font-size: 12px;
+}
+.ex-info-row:last-child { border-bottom: none; }
+.ex-info-key { color: var(--text2); }
+.ex-info-val { font-weight: 500; font-family: var(--font-mono); font-size: 12px; }
+
+.choices-panel {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); overflow: hidden;
+}
+.choices-title {
+  font-size: 10px; font-weight: 500; color: var(--text3); letter-spacing: .6px;
+  padding: 10px 16px; background: var(--bg3); border-bottom: 1px solid var(--border);
+  font-family: var(--font-mono);
+}
+.choices-body { padding: 12px; display: flex; flex-direction: column; gap: 6px; }
+.choice {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 14px; border-radius: var(--radius); cursor: pointer;
+  border: 1px solid var(--border); background: var(--bg);
+  transition: all var(--transition);
+}
+.choice:hover:not(.locked) { border-color: var(--border2); background: var(--bg3); }
+.choice.selected { border-color: var(--blue); background: var(--blue-bg); }
+.choice.correct { border-color: var(--green); background: var(--green-bg); }
+.choice.wrong { border-color: var(--red); background: var(--red-bg); }
+.choice-letter {
+  width: 22px; height: 22px; border-radius: var(--radius); border: 1px solid var(--border2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 500; font-family: var(--font-mono);
+  color: var(--text2); flex-shrink: 0;
+}
+.choice.selected .choice-letter { background: var(--blue); color: #000; border-color: var(--blue); }
+.choice.correct .choice-letter { background: var(--green); color: #000; border-color: var(--green); }
+.choice.wrong .choice-letter { background: var(--red); color: #fff; border-color: var(--red); }
+.choice-text { font-family: var(--font-mono); font-size: 13px; }
+
+.ex-actions { display: flex; gap: 8px; padding: 12px; border-top: 1px solid var(--border); }
+
+.solution-panel {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); overflow: hidden;
+}
+.sol-title {
+  font-size: 10px; font-weight: 500; color: var(--green); letter-spacing: .6px;
+  padding: 10px 16px; background: var(--green-bg); border-bottom: 1px solid var(--green-dim);
+  font-family: var(--font-mono); display: flex; align-items: center; gap: 8px;
+}
+.sol-body { padding: 14px 16px; }
+.sol-step { display: flex; gap: 10px; margin-bottom: 12px; align-items: flex-start; }
+.sol-step:last-child { margin-bottom: 0; }
+.sol-num {
+  width: 20px; height: 20px; border-radius: var(--radius);
+  background: var(--green-bg); border: 1px solid var(--green-dim);
+  color: var(--green); font-size: 10px; font-weight: 500;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 1px; font-family: var(--font-mono);
+}
+.sol-text { font-size: 12px; line-height: 1.65; color: var(--text2); }
+.sol-eq {
+  font-family: var(--font-mono); font-size: 12px; background: var(--bg);
+  border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 7px 12px; margin-top: 6px; color: var(--green);
+}
+.result-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 14px; border-radius: 99px; font-size: 12px; font-weight: 500;
+  margin-bottom: 12px; font-family: var(--font-mono);
+}
+.result-pill.ok { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-dim); }
+.result-pill.bad { background: var(--red-bg); color: var(--red); border: 1px solid #5a1d1a; }
+
+/* ─── Page: Exams ───────────────────────────────────────── */
+.exams-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.exams-header h2 { font-family: var(--font-disp); font-size: 20px; font-weight: 700; letter-spacing: -.3px; }
+
+.filter-section { margin-bottom: 20px; }
+.filter-group-label {
+  font-size: 10px; font-weight: 500; color: var(--text3); letter-spacing: .6px;
+  font-family: var(--font-mono); margin-bottom: 8px;
+}
+.filter-pills { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+.filter-pill {
+  padding: 5px 14px; border-radius: 99px; font-size: 12px;
+  border: 1px solid var(--border); background: none; color: var(--text2);
+  cursor: pointer; transition: all var(--transition);
+}
+.filter-pill:hover { border-color: var(--border2); color: var(--text); }
+.filter-pill.active { background: var(--bg3); color: var(--text); border-color: var(--border2); font-weight: 500; }
+
+.exam-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.exam-card {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg);
+  padding: 18px; cursor: pointer; transition: border-color var(--transition), background var(--transition);
+  position: relative; overflow: hidden;
+}
+.exam-card:hover { border-color: var(--border2); background: var(--bg3); }
+.exam-card.new-exam { border-color: var(--orange); }
+.exam-new-tag {
+  font-size: 9px; font-weight: 500; color: var(--orange); letter-spacing: .6px;
+  font-family: var(--font-mono); background: var(--orange-bg); padding: 2px 8px;
+  border-radius: 99px; border: 1px solid #5a3d00; display: inline-block; margin-bottom: 10px;
+}
+.exam-year { font-family: var(--font-disp); font-size: 26px; font-weight: 800; letter-spacing: -1px; margin-bottom: 3px; }
+.exam-fac { font-size: 12px; color: var(--text2); margin-bottom: 12px; }
+.exam-details { display: flex; gap: 12px; font-size: 11px; color: var(--text3); font-family: var(--font-mono); }
+.exam-progress-bar { height: 2px; background: var(--border); border-radius: 1px; margin-top: 14px; }
+.exam-progress-fill { height: 2px; background: var(--blue); border-radius: 1px; }
+.exam-progress-text { font-size: 10px; color: var(--text3); font-family: var(--font-mono); margin-top: 5px; }
+
+/* ─── Page: Profile ─────────────────────────────────────── */
+.profile-header {
+  display: flex; align-items: center; gap: 16px; margin-bottom: 24px;
+  padding-bottom: 24px; border-bottom: 1px solid var(--border);
+}
+.profile-avatar-lg {
+  width: 60px; height: 60px; border-radius: 50%;
+  background: var(--blue-bg); border: 2px solid var(--blue);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-disp); font-size: 20px; font-weight: 700; color: var(--blue);
+}
+.profile-name { font-family: var(--font-disp); font-size: 20px; font-weight: 700; letter-spacing: -.3px; margin-bottom: 3px; }
+.profile-sub { font-size: 12px; color: var(--text2); }
+.profile-header-stats { margin-left: auto; display: flex; gap: 0; }
+.profile-stat-block {
+  text-align: center; padding: 0 20px; border-right: 1px solid var(--border);
+}
+.profile-stat-block:last-child { border-right: none; }
+.psb-n { font-family: var(--font-disp); font-size: 20px; font-weight: 700; }
+.psb-l { font-size: 11px; color: var(--text3); margin-top: 2px; font-family: var(--font-mono); }
+
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 20px; }
+.stat-card {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px;
+}
+.stat-card-n { font-family: var(--font-mono); font-size: 24px; font-weight: 500; color: var(--green); margin-bottom: 4px; }
+.stat-card-l { font-size: 11px; color: var(--text3); }
+
+.profile-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 12px; }
+
+.activity-card {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px;
+}
+.activity-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.activity-card-title { font-family: var(--font-disp); font-size: 13px; font-weight: 600; }
+.act-legend { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text3); }
+.act-legend-cell { width: 10px; height: 10px; border-radius: 2px; }
+.act-months { display: flex; margin-bottom: 4px; }
+.act-month-label { font-size: 9px; color: var(--text3); font-family: var(--font-mono); flex: 0 0 auto; }
+.act-grid-wrap { display: flex; gap: 2px; }
+.act-col { display: flex; flex-direction: column; gap: 2px; }
+.act-cell { width: 10px; height: 10px; border-radius: 2px; cursor: pointer; transition: opacity var(--transition); }
+.act-cell:hover { opacity: .7; }
+.c0 { background: var(--bg3); }
+.c1 { background: #196c2e; }
+.c2 { background: #2ea043; }
+.c3 { background: #3fb950; }
+.c4 { background: #7ce8a0; }
+.act-tooltip { font-size: 11px; color: var(--text3); font-family: var(--font-mono); margin-top: 10px; min-height: 16px; }
+
+.topic-progress-card {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px;
+}
+.tpc-title { font-family: var(--font-disp); font-size: 13px; font-weight: 600; margin-bottom: 14px; }
+.tp-row { margin-bottom: 12px; }
+.tp-row:last-child { margin-bottom: 0; }
+.tp-label-row { display: flex; justify-content: space-between; margin-bottom: 4px; }
+.tp-name { font-size: 12px; color: var(--text2); }
+.tp-pct { font-size: 11px; font-family: var(--font-mono); color: var(--green); }
+.tp-track { height: 4px; background: var(--border); border-radius: 2px; }
+.tp-fill { height: 4px; border-radius: 2px; background: var(--green); }
+
+/* ─── Leaderboard ───────────────────────────────────────── */
+.lb-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.lb-header h2 { font-family: var(--font-disp); font-size: 20px; font-weight: 700; letter-spacing: -.3px; }
+.lb-live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); display: inline-block; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+.lb-table { border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+.lb-head {
+  display: grid; grid-template-columns: 48px 1fr 90px 90px 90px;
+  padding: 10px 18px; background: var(--bg3);
+  font-size: 10px; color: var(--text3); font-weight: 500; letter-spacing: .5px;
+  font-family: var(--font-mono); border-bottom: 1px solid var(--border);
+}
+.lb-row {
+  display: grid; grid-template-columns: 48px 1fr 90px 90px 90px;
+  padding: 13px 18px; border-bottom: 1px solid var(--border);
+  align-items: center; cursor: pointer; transition: background var(--transition);
+}
+.lb-row:last-child { border-bottom: none; }
+.lb-row:hover { background: var(--bg3); }
+.lb-row.me { background: var(--blue-bg); border-color: #1a3a5c; }
+.lb-row.me:hover { background: #0e2440; }
+.lb-rank { font-family: var(--font-mono); font-size: 13px; font-weight: 500; color: var(--text3); }
+.lb-rank.gold { color: #ffd700; }
+.lb-rank.silver { color: #c0c0c0; }
+.lb-rank.bronze { color: #cd7f32; }
+.lb-user { display: flex; align-items: center; gap: 10px; }
+.lb-avatar {
+  width: 30px; height: 30px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 500; font-family: var(--font-disp);
+}
+.lb-name { font-size: 13px; font-weight: 500; }
+.lb-school { font-size: 11px; color: var(--text3); }
+.lb-val { font-family: var(--font-mono); font-size: 13px; text-align: right; }
+.lb-val.green { color: var(--green); }
+
+/* ─── Buttons ───────────────────────────────────────────── */
+.btn {
+  padding: 8px 18px; border-radius: var(--radius); font-size: 13px; font-weight: 500;
+  cursor: pointer; border: none; transition: all var(--transition); font-family: var(--font-ui);
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.btn-primary { background: var(--green); color: #000; }
+.btn-primary:hover { background: #52d467; }
+.btn-secondary {
+  background: var(--bg3); color: var(--text2); border: 1px solid var(--border);
+}
+.btn-secondary:hover { background: var(--bg2); color: var(--text); border-color: var(--border2); }
+.btn-ghost { background: none; color: var(--text2); border: 1px solid var(--border); }
+.btn-ghost:hover { color: var(--text); border-color: var(--border2); }
+.btn:disabled { opacity: .35; cursor: not-allowed; }
+
+/* ─── Breadcrumb ────────────────────────────────────────── */
+.breadcrumb {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12px; color: var(--text3); margin-bottom: 18px;
+  font-family: var(--font-mono);
+}
+.breadcrumb-link { cursor: pointer; color: var(--text2); }
+.breadcrumb-link:hover { color: var(--blue); }
+.breadcrumb-sep { color: var(--text3); }
+
+/* ─── Exam (full-screen) ────────────────────────────────── */
+.exam-topbar {
+  background: var(--bg2); border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 24px; height: 52px; gap: 16px;
+}
+.exam-topbar-title { font-family: var(--font-disp); font-size: 14px; font-weight: 600; }
+.exam-topbar-sub { font-size: 12px; color: var(--text2); }
+.exam-timer {
+  font-family: var(--font-mono); font-size: 20px; font-weight: 500;
+  color: var(--green); margin-left: auto;
+}
+.exam-timer.warn { color: var(--orange); }
+.exam-timer.danger { color: var(--red); }
+.exam-score-live { font-family: var(--font-mono); font-size: 13px; color: var(--text2); }
+
+.exam-layout { display: grid; grid-template-columns: 180px 1fr; gap: 12px; align-items: start; padding: 20px 24px; }
+.exam-sidebar { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 14px; }
+.exam-sidebar-title { font-size: 10px; color: var(--text3); font-family: var(--font-mono); letter-spacing: .5px; margin-bottom: 10px; }
+.exam-q-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 4px; }
+.exam-q-btn {
+  width: 26px; height: 26px; border-radius: var(--radius); font-size: 10px;
+  font-family: var(--font-mono); font-weight: 500; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--border); background: var(--bg); color: var(--text3);
+  transition: all var(--transition);
+}
+.exam-q-btn:hover { border-color: var(--border2); color: var(--text); }
+.exam-q-btn.current { border-color: var(--orange); color: var(--orange); background: var(--orange-bg); }
+.exam-q-btn.answered { border-color: var(--border2); background: var(--bg3); color: var(--text); }
+.exam-q-btn.correct { border-color: var(--green); background: var(--green-bg); color: var(--green); }
+.exam-q-btn.wrong { border-color: var(--red); background: var(--red-bg); color: var(--red); }
+
+.exam-progress-section { margin-top: 14px; border-top: 1px solid var(--border); padding-top: 12px; }
+.exam-progress-label { display: flex; justify-content: space-between; font-size: 10px; color: var(--text3); font-family: var(--font-mono); margin-bottom: 5px; }
+.exam-prog-bar { height: 3px; background: var(--border); border-radius: 2px; }
+.exam-prog-fill { height: 3px; background: var(--orange); border-radius: 2px; transition: width .3s; }
+
+.exam-q-panel {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden;
+}
+.exam-q-header {
+  display: flex; align-items: center; gap: 10px; padding: 14px 20px;
+  border-bottom: 1px solid var(--border); background: var(--bg3);
+}
+.exam-q-num { font-family: var(--font-mono); font-size: 12px; color: var(--text2); }
+.exam-q-body { padding: 20px; }
+
+/* ─── Animations ────────────────────────────────────────── */
+@keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+.page.active { animation: fadeIn .2s ease; }
+</style>
+</head>
+<body>
+<div class="layout">
+
+<!-- ─── Topnav ──────────────────────────────────────────── -->
+<nav class="topnav" id="topnav">
+  <a class="logo" onclick="nav('topics')">
+    <div class="logo-mark">M</div>
+    Math<span>RS</span>
+  </a>
+  <div class="nav-links">
+    <button class="nav-link active" id="nl-topics" onclick="nav('topics')">Teme</button>
+    <button class="nav-link" id="nl-exams" onclick="nav('exams')">Probaj ispit</button>
+    <button class="nav-link" id="nl-leaderboard" onclick="nav('leaderboard')">Rang lista</button>
+  </div>
+  <div class="nav-right">
+    <div class="streak-badge"><div class="streak-dot"></div>14 dana niza</div>
+    <div class="nav-avatar" onclick="nav('profile')">MJ</div>
+  </div>
+</nav>
+
+<!-- ─── Main ────────────────────────────────────────────── -->
+<div class="main" id="mainContainer">
+
+<!-- Page: Topics ──────────────────────────────────────── -->
+<div class="page active" id="page-topics">
+  <div class="topics-hero">
+    <div class="topics-hero-text">
+      <h1>Matematika za prijemni</h1>
+      <p>Savladaj svih 13 oblasti i spremi se za upis na fakultet</p>
+    </div>
+    <div class="hero-meta">
+      <div class="hero-stat"><div class="hero-stat-n">4 200+</div><div class="hero-stat-l">ZADATAKA</div></div>
+      <div class="hero-stat"><div class="hero-stat-n" style="color:var(--blue)">12</div><div class="hero-stat-l">PREDMETA</div></div>
+      <div class="hero-stat"><div class="hero-stat-n" style="color:var(--orange)">18</div><div class="hero-stat-l">GOD. ARHIVE</div></div>
+    </div>
+  </div>
+  <div class="topic-grid" id="topic-grid"></div>
+</div>
+
+<!-- Page: Topic Detail ─────────────────────────────────── -->
+<div class="page" id="page-topic">
+  <div class="breadcrumb">
+    <span class="breadcrumb-link" onclick="nav('topics')">teme</span>
+    <span class="breadcrumb-sep">/</span>
+    <span id="breadcrumb-topic" style="color:var(--text2)"></span>
+  </div>
+  <div class="topic-detail-header">
+    <div class="tdh-left">
+      <h2 id="td-title"></h2>
+      <div class="tdh-meta">
+        <span id="td-diff-badge"></span>
+        <span id="td-total" style="color:var(--text3);font-family:var(--font-mono);font-size:11px"></span>
+        <span id="td-acc" style="color:var(--text3);font-family:var(--font-mono);font-size:11px"></span>
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="openExerciseFromTopic()">Nasumični zadatak →</button>
+  </div>
+  <div class="theory-panel">
+    <div class="theory-panel-header">
+      <h3 id="theory-panel-title"></h3>
+      <span class="theory-label">TEORIJA</span>
+    </div>
+    <div class="theory-body">
+      <p id="theory-p1"></p>
+      <div class="formula-block" id="theory-f1"></div>
+      <p id="theory-p2"></p>
+      <div class="formula-block" id="theory-f2"></div>
+    </div>
+  </div>
+  <div class="prob-list-header">
+    <h3>Zadaci</h3>
+    <div class="tab-pills">
+      <button class="tab-pill active" onclick="filterProbs(this,'all')">Svi</button>
+      <button class="tab-pill" onclick="filterProbs(this,'unsolved')">Nerešeni</button>
+      <button class="tab-pill" onclick="filterProbs(this,'solved')">Rešeni</button>
+    </div>
+  </div>
+  <div class="prob-table">
+    <div class="prob-table-head">
+      <span></span><span>NAZIV</span><span>OBLAST</span><span>IZVOR</span><span style="text-align:right">TAČNOST</span>
+    </div>
+    <div id="prob-list"></div>
+  </div>
+</div>
+
+<!-- Page: Exercise ─────────────────────────────────────── -->
+<div class="page" id="page-exercise">
+  <div class="breadcrumb">
+    <span class="breadcrumb-link" onclick="nav('topics')">teme</span>
+    <span class="breadcrumb-sep">/</span>
+    <span class="breadcrumb-link" onclick="nav('topic')" id="bc-topic"></span>
+    <span class="breadcrumb-sep">/</span>
+    <span style="color:var(--text2)" id="bc-prob"></span>
+  </div>
+  <div class="exercise-layout">
+    <div class="ex-left-panel">
+      <div class="ex-panel-tabs">
+        <div class="ex-panel-tab active">Zadatak</div>
+        <div class="ex-panel-tab" onclick="alert('Diskusija nije dostupna u prototipu')">Diskusija <span style="font-size:10px;color:var(--text3)">12</span></div>
+      </div>
+      <div class="ex-problem-body">
+        <div class="ex-meta-row">
+          <span class="ex-id" id="ex-id"></span>
+          <span class="topic-tag" id="ex-topic-tag"></span>
+          <span class="diff-badge" id="ex-diff-badge"></span>
+          <span class="source-tag" id="ex-source-tag"></span>
+        </div>
+        <div class="ex-problem-title" id="ex-title"></div>
+        <div class="theory-callout">
+          <div class="tc-label" id="ex-theory-label"></div>
+          <div class="tc-text" id="ex-theory-text"></div>
+          <div class="tc-formula" id="ex-theory-formula"></div>
+        </div>
+        <div class="prob-statement" id="ex-prob-text"></div>
+        <div class="prob-eq" id="ex-prob-eq"></div>
+        <div class="prob-stats">
+          <span id="ex-solved-count"></span>
+          <span>·</span>
+          <span id="ex-accuracy"></span>
+        </div>
+      </div>
+    </div>
+    <div class="ex-right-panel">
+      <div class="ex-info-card">
+        <div class="ex-info-title">DETALJI ZADATKA</div>
+        <div class="ex-info-row"><span class="ex-info-key">Oblast</span><span class="ex-info-val" id="ei-topic"></span></div>
+        <div class="ex-info-row"><span class="ex-info-key">Težina</span><span class="ex-info-val" id="ei-diff"></span></div>
+        <div class="ex-info-row"><span class="ex-info-key">Izvor</span><span class="ex-info-val" id="ei-source"></span></div>
+        <div class="ex-info-row"><span class="ex-info-key">Bodovi</span><span class="ex-info-val" style="color:var(--green)" id="ei-xp"></span></div>
+      </div>
+      <div class="choices-panel">
+        <div class="choices-title">ODABERI ODGOVOR</div>
+        <div class="choices-body" id="choices"></div>
+        <div class="ex-actions">
+          <button class="btn btn-primary" id="btn-submit" disabled onclick="submitAnswer()" style="flex:1">Potvrdi odgovor</button>
+          <button class="btn btn-ghost" onclick="showSolution()">Rešenje</button>
+        </div>
+      </div>
+      <div class="solution-panel" id="solution-panel" style="display:none">
+        <div class="sol-title" id="sol-title-bar">▸ KORAK PO KORAK</div>
+        <div class="sol-body" id="sol-steps"></div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-secondary" style="flex:1" onclick="nextProblem()">Sledeći zadatak →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Page: Exams ─────────────────────────────────────────── -->
+<div class="page" id="page-exams">
+  <div class="exams-header">
+    <div>
+      <h2>Probaj ispit</h2>
+      <p style="font-size:12px;color:var(--text2);margin-top:4px">Originalni prijemni ispiti u punim uslovima</p>
+    </div>
+  </div>
+  <div class="filter-section">
+    <div class="filter-group-label">FAKULTET</div>
+    <div class="filter-pills">
+      <button class="filter-pill active" onclick="filt(this,'fac','all')">Svi</button>
+      <button class="filter-pill" onclick="filt(this,'fac','etf')">ETF Beograd</button>
+      <button class="filter-pill" onclick="filt(this,'fac','pmf')">PMF Novi Sad</button>
+      <button class="filter-pill" onclick="filt(this,'fac','mas')">Mašinski</button>
+      <button class="filter-pill" onclick="filt(this,'fac','rgf')">RGF</button>
+      <button class="filter-pill" onclick="filt(this,'fac','fon')">FON</button>
+    </div>
+    <div class="filter-group-label">PERIOD</div>
+    <div class="filter-pills">
+      <button class="filter-pill active" onclick="filt(this,'yr','all')">Sve</button>
+      <button class="filter-pill" onclick="filt(this,'yr','2020')">2020–2024</button>
+      <button class="filter-pill" onclick="filt(this,'yr','2015')">2015–2019</button>
+      <button class="filter-pill" onclick="filt(this,'yr','2010')">2010–2014</button>
+    </div>
+  </div>
+  <div class="exam-grid" id="exam-grid"></div>
+</div>
+
+<!-- Page: Profile ──────────────────────────────────────── -->
+<div class="page" id="page-profile">
+  <div class="profile-header">
+    <div class="profile-avatar-lg">MJ</div>
+    <div>
+      <div class="profile-name">Marko Jovanović</div>
+      <div class="profile-sub">Priprema za ETF Beograd · od septembra 2024</div>
+    </div>
+    <div class="profile-header-stats">
+      <div class="profile-stat-block"><div class="psb-n" style="color:var(--orange)">14</div><div class="psb-l">NIZ DANA</div></div>
+      <div class="profile-stat-block"><div class="psb-n" style="color:var(--blue)">#38</div><div class="psb-l">RANG LISTA</div></div>
+    </div>
+  </div>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-card-n">342</div><div class="stat-card-l">Zadataka rešeno</div></div>
+    <div class="stat-card"><div class="stat-card-n" style="color:var(--blue)">78%</div><div class="stat-card-l">Prosečna tačnost</div></div>
+    <div class="stat-card"><div class="stat-card-n" style="color:var(--orange)">1 026</div><div class="stat-card-l">Ukupno XP</div></div>
+    <div class="stat-card"><div class="stat-card-n" style="color:var(--purple)">47</div><div class="stat-card-l">Aktivnih dana</div></div>
+  </div>
+  <div class="profile-grid">
+    <div class="activity-card">
+      <div class="activity-card-header">
+        <span class="activity-card-title">Aktivnost — poslednjih 365 dana</span>
+        <div class="act-legend">
+          <span>Manje</span>
+          <div class="act-legend-cell c0"></div>
+          <div class="act-legend-cell c1"></div>
+          <div class="act-legend-cell c2"></div>
+          <div class="act-legend-cell c3"></div>
+          <div class="act-legend-cell c4"></div>
+          <span>Više</span>
+        </div>
+      </div>
+      <div class="act-months" id="act-months"></div>
+      <div class="act-grid-wrap" id="act-grid"></div>
+      <div class="act-tooltip" id="act-tooltip">Pređite mišem za detalje</div>
+    </div>
+    <div class="topic-progress-card">
+      <div class="tpc-title">Napredak po oblastima</div>
+      <div id="topic-progress-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Page: Leaderboard ──────────────────────────────────── -->
+<div class="page" id="page-leaderboard">
+  <div class="lb-header">
+    <div>
+      <h2>Globalna rang lista</h2>
+      <p style="font-size:12px;color:var(--text2);margin-top:4px;display:flex;align-items:center;gap:6px"><div class="lb-live-dot"></div> Ažurirano u realnom vremenu</p>
+    </div>
+  </div>
+  <div class="filter-pills" style="margin-bottom:16px" id="lb-filter-pills">
+    <button class="filter-pill active" onclick="lbFilt(this)">Svi</button>
+    <button class="filter-pill" onclick="lbFilt(this)">ETF Beograd</button>
+    <button class="filter-pill" onclick="lbFilt(this)">PMF Novi Sad</button>
+    <button class="filter-pill" onclick="lbFilt(this)">Mašinski</button>
+    <button class="filter-pill" onclick="lbFilt(this)">Ovaj mesec</button>
+  </div>
+  <div class="lb-table">
+    <div class="lb-head">
+      <span>#</span><span>KORISNIK</span>
+      <span style="text-align:right">XP</span>
+      <span style="text-align:right">TAČNOST</span>
+      <span style="text-align:right">REŠENO</span>
+    </div>
+    <div id="lb-body"></div>
+  </div>
+</div>
+
+</div><!-- /main -->
+</div><!-- /layout -->
+
+<!-- ─── Exam mode overlay ────────────────────────────────── -->
+<div id="exam-overlay" style="display:none;position:fixed;inset:0;background:var(--bg);z-index:200;flex-direction:column;overflow-y:auto">
+  <div class="exam-topbar">
+    <div>
+      <div class="exam-topbar-title" id="exam-overlay-title"></div>
+      <div class="exam-topbar-sub">Matematika · 30 pitanja · 90 minuta</div>
+    </div>
+    <span class="exam-score-live" id="exam-score-live">0 / 60 bodova</span>
+    <div class="exam-timer" id="exam-timer">90:00</div>
+    <button class="btn btn-primary" style="margin-left:16px" onclick="submitExam()">Predaj ispit</button>
+    <button class="btn btn-ghost" style="margin-left:8px" onclick="closeExam()">✕</button>
+  </div>
+  <div class="exam-layout">
+    <div class="exam-sidebar">
+      <div class="exam-sidebar-title">PITANJA</div>
+      <div class="exam-q-grid" id="exam-q-grid"></div>
+      <div class="exam-progress-section">
+        <div class="exam-progress-label"><span>Napredak</span><span id="exam-prog-text">0/30</span></div>
+        <div class="exam-prog-bar"><div class="exam-prog-fill" id="exam-prog-fill" style="width:0%"></div></div>
+      </div>
+    </div>
+    <div class="exam-q-panel">
+      <div class="exam-q-header">
+        <span class="exam-q-num" id="eqh-num"></span>
+        <span class="topic-tag" id="eqh-topic"></span>
+        <span class="diff-badge" id="eqh-diff"></span>
+        <span style="margin-left:auto;font-size:11px;color:var(--text3);font-family:var(--font-mono)">2 boda</span>
+      </div>
+      <div class="exam-q-body" id="exam-q-body"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── Data ──────────────────────────────────────────────────
+const topics = [
+  {id:1,name:"Skupovi i logika",sub:"Operacije, presek, unija",diff:"e",done:92,total:120,progress:77,theory:{title:"Skupovi i logičke operacije",p1:"Skup je kolekcija različitih elemenata. Koristimo vitičaste zagrade: A = {1,2,3}.",f1:"A ∪ B — unija  |  A ∩ B — presek  |  A ∖ B — razlika",p2:"Logičke operacije: konjunkcija (∧), disjunkcija (∨), negacija (¬) i implikacija (⇒).",f2:"De Morganovi zakoni: ¬(A ∪ B) = ¬A ∩ ¬B"}},
+  {id:2,name:"Kvadratne jednačine",sub:"Vijèt, diskriminanta, korenovi",diff:"m",done:67,total:140,progress:48,theory:{title:"Kvadratne jednačine — ključne formule",p1:"Kvadratna jednačina oblika ax² + bx + c = 0 (a ≠ 0) rešava se formulom za diskriminantu ili Vijètovim formulama.",f1:"D = b² − 4ac  |  x₁,₂ = (−b ± √D) / 2a",p2:"Vijètove formule daju vezu između korena i koeficijenata bez računanja korena:",f2:"x₁ + x₂ = −b/a  |  x₁ · x₂ = c/a"}},
+  {id:3,name:"Nejednačine",sub:"Linearne, kvadratne, racionalne",diff:"m",done:41,total:110,progress:37,theory:{title:"Rešavanje nejednačina",p1:"Linearna nejednačina ax + b > 0 rešava se kao jednačina, uz obavezno okretanje znaka pri množenju negativnim brojem.",f1:"ax > b  →  x > b/a  (ako a > 0)  |  x < b/a  (ako a < 0)",p2:"Kvadratna nejednačina ax² + bx + c > 0 rešava se nalaženjem korena pa analizom znaka.",f2:"Ako D > 0: koreni x₁ < x₂ dele brojevnu osu na 3 intervala"}},
+  {id:4,name:"Funkcije",sub:"Osobine, grafik, inverzna",diff:"m",done:55,total:150,progress:37,theory:{title:"Funkcije i njihove osobine",p1:"Funkcija f: A → B pridružuje svakom elementu domene tačno jedan element kodomena.",f1:"f je parna: f(−x) = f(x)  |  f je neparna: f(−x) = −f(x)",p2:"Inverzna funkcija f⁻¹ postoji kada je f bijekcija (injektivna i surjektivna).",f2:"f(f⁻¹(x)) = x  |  Grafik f⁻¹ je refleksija u y = x"}},
+  {id:5,name:"Trigonometrija",sub:"Formule, jednačine, primene",diff:"h",done:28,total:130,progress:22,theory:{title:"Trigonometrijske funkcije",p1:"sin, cos, tg i ctg definisane su na jediničnoj kružnici. Osnovni identitet: sin²α + cos²α = 1.",f1:"sin(α±β) = sinα·cosβ ± cosα·sinβ",p2:"Dvostruki ugao: sin 2α = 2 sinα cosα, cos 2α = cos²α − sin²α.",f2:"tgα = sinα / cosα  |  ctgα = cosα / sinα"}},
+  {id:6,name:"Kompleksni brojevi",sub:"Algebarski i trigonometrijski oblik",diff:"h",done:14,total:90,progress:16,theory:{title:"Kompleksni brojevi",p1:"Kompleksni broj z = a + bi, gde je i imaginarna jedinica (i² = −1). Modul: |z| = √(a² + b²).",f1:"|z| = √(a² + b²)  |  arg(z) = arctg(b/a)",p2:"Trigonometrijski oblik: z = r(cosφ + i sinφ). De Moivrov obrazac:",f2:"zⁿ = rⁿ(cos(nφ) + i sin(nφ))"}},
+  {id:7,name:"Analitička geometrija",sub:"Prava, krug, konusni preseci",diff:"h",done:32,total:180,progress:18,theory:{title:"Analitička geometrija u ravni",p1:"Rastojanje između tačaka A(x₁,y₁) i B(x₂,y₂): d = √((x₂−x₁)² + (y₂−y₁)²).",f1:"Jednačina prave: ax + by + c = 0  |  nagib: k = −a/b",p2:"Jednačina kružnice sa centrom C(a,b) i poluprecnikom r:",f2:"(x−a)² + (y−b)² = r²"}},
+  {id:8,name:"Nizovi i redovi",sub:"Aritmetički, geometrijski, limes",diff:"m",done:50,total:100,progress:50,theory:{title:"Nizovi i redovi",p1:"Aritmetički niz: razlika uzastopnih članova je konstantna (d). Geometrijski: količnik je konstantan (q).",f1:"aₙ = a₁ + (n−1)d  |  Sₙ = n(a₁ + aₙ)/2",p2:"Geometrijski niz i suma n članova:",f2:"aₙ = a₁ · qⁿ⁻¹  |  Sₙ = a₁(qⁿ−1)/(q−1)"}},
+  {id:9,name:"Kombinatorika",sub:"Permutacije, kombinacije, varijacije",diff:"e",done:60,total:80,progress:75,theory:{title:"Kombinatorika — prebrojavanje",p1:"Permutacije n elemenata: Pₙ = n! Varijacije n elemenata k-te klase (sa ponavljanjem): Vₙᵏ = nᵏ.",f1:"P(n,k) = n!/(n−k)!  |  C(n,k) = n! / (k!(n−k)!)",p2:"Binomni obrazac daje razvoj (a+b)ⁿ:",f2:"(a+b)ⁿ = Σ C(n,k) · aⁿ⁻ᵏ · bᵏ"}},
+  {id:10,name:"Verovatnoća",sub:"Klasična, uslovana, nezavisnost",diff:"m",done:35,total:90,progress:39,theory:{title:"Teorija verovatnoće",p1:"Klasična verovatnoća: P(A) = |A| / |Ω|, broj povoljnih / broj svih ishoda.",f1:"P(A ∪ B) = P(A) + P(B) − P(A ∩ B)",p2:"Uslovana verovatnoća i nezavisnost događaja:",f2:"P(A|B) = P(A ∩ B)/P(B)  |  nezav.: P(A∩B) = P(A)·P(B)"}},
+  {id:11,name:"Matrice i determinante",sub:"Operacije, rang, inverzna matrica",diff:"h",done:18,total:100,progress:18,theory:{title:"Matrice",p1:"Matrica je pravougaona tabela brojeva. Sabiranje i množenje skalarom vrši se element po element.",f1:"(AB)ᵢⱼ = Σₖ aᵢₖ · bₖⱼ",p2:"Determinanta 2×2 matrice i uslov invertibilnosti:",f2:"det A = ad − bc  |  A⁻¹ postoji ⟺ det A ≠ 0"}},
+  {id:12,name:"Derivacije",sub:"Pravila diferenciranja, primene",diff:"h",done:22,total:140,progress:16,theory:{title:"Derivacije funkcija",p1:"Derivacija f'(x) meri trenutnu stopu promene funkcije. Geometrijski — nagib tangente.",f1:"(f·g)' = f'g + fg'  |  (f/g)' = (f'g − fg')/g²",p2:"Lančano pravilo za složenu funkciju:",f2:"[f(g(x))]' = f'(g(x)) · g'(x)"}},
+  {id:13,name:"Integrali",sub:"Neodređeni, određeni, Newton-Leibniz",diff:"h",done:8,total:120,progress:7,theory:{title:"Integralni račun",p1:"Neodređeni integral ∫f(x)dx je antiderivacija funkcije f. Određeni integral meri površinu.",f1:"∫xⁿ dx = xⁿ⁺¹/(n+1) + C  |  ∫eˣ dx = eˣ + C",p2:"Newton-Leibnizova formula za određeni integral:",f2:"∫ₐᵇ f(x)dx = F(b) − F(a)"}},
+];
+
+const sampleProblems = {
+  2:[
+    {id:47,title:"Nađi zbir korena kvadratne jednačine",eq:"3x² − 7x + 2 = 0",source:"ETF Beograd 2022",diff:"m",xp:3,solved:1847,acc:68,correct:0,choices:["7/3","−7/3","2/3","3/7"],theoryLabel:"VIJÈTEOVE FORMULE",theoryText:"Za ax² + bx + c = 0 sa korenima x₁ i x₂:",theoryFormula:"x₁ + x₂ = −b/a  |  x₁ · x₂ = c/a",probText:"Data je kvadratna jednačina. Koliki je zbir korena?",steps:[{t:"Koeficijenti: a = 3, b = −7, c = 2",e:"3x² + (−7)x + 2 = 0"},{t:"Vijètova formula za zbir:",e:"x₁ + x₂ = −b/a = −(−7)/3 = 7/3"},{t:"Provjera: x=2 i x=1/3, zbir = 2+1/3 = 7/3 ✓",e:""}]},
+    {id:48,title:"Odredi parametar k — jednaka korena",eq:"x² − (k+1)x + 4 = 0",source:"PMF Novi Sad 2021",diff:"m",xp:3,solved:1203,acc:54,correct:0,choices:["k = 3 ili k = −5","k = −3 ili k = 1","k = 1 ili k = 4","k = −1 ili k = 3"],theoryLabel:"DISKRIMINANTA",theoryText:"Jednačina ima jednaka korena kada je D = 0:",theoryFormula:"D = b² − 4ac = 0",probText:"Za koje vrednosti k jednačina ima dvostruki koren?",steps:[{t:"a=1, b=−(k+1), c=4. Uslov: D=0",e:"(k+1)² − 16 = 0"},{t:"(k+1) = ±4",e:"k = 3  ili  k = −5"}]},
+    {id:49,title:"Zbir kvadrata korena",eq:"2x² + 6x − 1 = 0",source:"Mašinski 2023",diff:"h",xp:4,solved:920,acc:41,correct:0,choices:["x₁²+x₂² = 10","x₁²+x₂² = 41/4","x₁²+x₂² = 9","x₁²+x₂² = 37/4"],theoryLabel:"ALGEBARSKI IDENTITET",theoryText:"Koristimo: x₁² + x₂² = (x₁+x₂)² − 2x₁x₂",theoryFormula:"x₁²+x₂² = (x₁+x₂)² − 2·x₁x₂",probText:"Izračunaj zbir kvadrata korena date jednačine.",steps:[{t:"Vijèt: x₁+x₂ = −3, x₁·x₂ = −1/2",e:""},{t:"Primena identiteta:",e:"(−3)² − 2·(−1/2) = 9 + 1 = 10"}]},
+  ]
+};
+
+const exams=[
+  {fac:"ETF Beograd",facId:"etf",yr:2024,q:30,min:90,done:0,isNew:true},
+  {fac:"ETF Beograd",facId:"etf",yr:2023,q:30,min:90,done:70},
+  {fac:"ETF Beograd",facId:"etf",yr:2022,q:30,min:90,done:100},
+  {fac:"ETF Beograd",facId:"etf",yr:2021,q:30,min:90,done:45},
+  {fac:"PMF Novi Sad",facId:"pmf",yr:2024,q:25,min:75,done:0,isNew:true},
+  {fac:"PMF Novi Sad",facId:"pmf",yr:2023,q:25,min:75,done:60},
+  {fac:"PMF Novi Sad",facId:"pmf",yr:2022,q:25,min:75,done:0},
+  {fac:"Mašinski",facId:"mas",yr:2024,q:20,min:60,done:0,isNew:true},
+  {fac:"Mašinski",facId:"mas",yr:2023,q:20,min:60,done:80},
+  {fac:"Mašinski",facId:"mas",yr:2022,q:20,min:60,done:35},
+  {fac:"RGF",facId:"rgf",yr:2023,q:20,min:60,done:0},
+  {fac:"RGF",facId:"rgf",yr:2022,q:20,min:60,done:0},
+  {fac:"FON",facId:"fon",yr:2023,q:25,min:75,done:0},
+];
+
+const lbData=[
+  {rank:1,name:"Ana Petrović",school:"ETF Beograd",xp:4820,acc:91,solved:512,av:"AP",avc:"blue"},
+  {rank:2,name:"Nikola Đorđević",school:"PMF Novi Sad",xp:4350,acc:88,solved:480,av:"ND",avc:"green"},
+  {rank:3,name:"Milica Stanković",school:"ETF Beograd",xp:4100,acc:85,solved:455,av:"MS",avc:"orange"},
+  {rank:4,name:"Stefan Ilić",school:"Mašinski",xp:3890,acc:82,solved:430,av:"SI",avc:""},
+  {rank:5,name:"Jovana Popović",school:"PMF Novi Sad",xp:3640,acc:80,solved:405,av:"JP",avc:""},
+  {rank:6,name:"Aleksandar Rašić",school:"ETF Beograd",xp:3410,acc:79,solved:380,av:"AR",avc:""},
+  {rank:7,name:"Katarina Vuković",school:"PMF Beograd",xp:3200,acc:77,solved:355,av:"KV",avc:""},
+  {rank:8,name:"Lazar Marinković",school:"Mašinski",xp:3080,acc:76,solved:340,av:"LM",avc:""},
+  {rank:38,name:"Marko Jovanović",school:"ETF Beograd",xp:1026,acc:78,solved:342,av:"MJ",avc:"blue",isMe:true},
+];
+
+const examQuestions=[
+  {topic:"Skupovi",text:"Ako je A={1,2,3,4,5} i B={3,4,5,6,7}, koliko elemenata ima A∪B?",eq:"",diff:"e",choices:["5","7","8","10"],correct:1,sol:"A∪B={1,2,3,4,5,6,7} → 7 elemenata. |A∪B|=|A|+|B|−|A∩B|=5+5−3=7."},
+  {topic:"Kvadratne",text:"Zbir korena jednačine je:",eq:"2x² − 10x + 3 = 0",diff:"m",choices:["5","−5","3/2","10"],correct:0,sol:"Vijèt: x₁+x₂ = −(−10)/2 = 5."},
+  {topic:"Funkcije",text:"Domen funkcije f(x) = √(4 − x²) je:",eq:"",diff:"m",choices:["[−2, 2]","(−2, 2)","[−4, 4]","(0, 2]"],correct:0,sol:"4−x²≥0 → x²≤4 → x∈[−2,2]."},
+  {topic:"Trigon.",text:"sin²30° + cos²60° + tg45° = ?",eq:"",diff:"e",choices:["3/2","1","2","5/4"],correct:0,sol:"1/4+1/4+1=3/2."},
+  {topic:"Nejednačine",text:"Skup rešenja: 2x − 3 > 7",eq:"",diff:"e",choices:["x > 5","x > 2","x < 5","x ≥ 5"],correct:0,sol:"2x>10 → x>5."},
+  {topic:"Kvadratne",text:"x² − 5x + k = 0 ima dvostruki koren. k = ?",eq:"",diff:"m",choices:["25/4","5/2","−25/4","5"],correct:0,sol:"D=0: 25−4k=0 → k=25/4."},
+  {topic:"Anal. geom.",text:"Rastojanje A(1,−2) i B(4,2) je:",eq:"",diff:"e",choices:["5","4","3","√7"],correct:0,sol:"d=√(9+16)=5."},
+  {topic:"Kombinat.",text:"C(6,3) = ?",eq:"",diff:"e",choices:["20","15","18","30"],correct:0,sol:"6!/(3!·3!)=20."},
+  {topic:"Funkcije",text:"f(x) = x² − 2x + 1. Vrednost f(3) je:",eq:"",diff:"e",choices:["4","6","2","8"],correct:0,sol:"9−6+1=4."},
+  {topic:"Nizovi",text:"Suma prvih 10 članova: a₁=2, d=3",eq:"",diff:"m",choices:["155","125","140","110"],correct:0,sol:"S₁₀=5·(4+27)=155."},
+  {topic:"Trigon.",text:"cos(π + α) = ?",eq:"",diff:"m",choices:["−cosα","cosα","sinα","−sinα"],correct:0,sol:"cos(π+α)=−cosα."},
+  {topic:"Kvadratne",text:"Proizvod korena: 3x² + 6x − 9 = 0",eq:"",diff:"m",choices:["−3","3","−6","6"],correct:0,sol:"x₁·x₂=c/a=−9/3=−3."},
+  {topic:"Verov.",text:"4 crvene, 6 plave kugle. P(crvena) = ?",eq:"",diff:"e",choices:["2/5","2/3","4/10","3/5"],correct:0,sol:"P=4/10=2/5."},
+  {topic:"Anal. geom.",text:"Kružnica sa centrom O(0,0) i r=3:",eq:"",diff:"e",choices:["x²+y²=9","x²+y²=3","x²+y²=6","(x+y)²=9"],correct:0,sol:"x²+y²=r²=9."},
+  {topic:"Funkcije",text:"Inverzna funkcija od f(x)=2x+4:",eq:"",diff:"m",choices:["(x−4)/2","2x−4","x/2+4","(x+4)/2"],correct:0,sol:"y=2x+4 → x=(y−4)/2."},
+  {topic:"Matrice",text:"det([[2,3],[1,4]]) = ?",eq:"",diff:"m",choices:["5","8","−5","11"],correct:0,sol:"2·4−3·1=5."},
+  {topic:"Nejednačine",text:"Rešenje nejednačine x² − 4 < 0:",eq:"",diff:"m",choices:["(−2, 2)","[−2, 2]","(−∞,−2)∪(2,∞)","(0,2)"],correct:0,sol:"|x|<2 → x∈(−2,2)."},
+  {topic:"Derivacije",text:"f(x)=x³−3x²+2. Vrednost f'(1) = ?",eq:"",diff:"m",choices:["−3","3","0","−1"],correct:0,sol:"f'(x)=3x²−6x. f'(1)=3−6=−3."},
+  {topic:"Kombinat.",text:"Koliko permutacija ima skup od 5 elemenata?",eq:"",diff:"e",choices:["120","60","24","100"],correct:0,sol:"5!=120."},
+  {topic:"Nizovi",text:"a₁₀ geometrijskog niza: a₁=2, q=3",eq:"a₁₀ = ?",diff:"m",choices:["2·3⁹","2·10³","3·2⁹","3¹⁰"],correct:0,sol:"aₙ=a₁·qⁿ⁻¹ → a₁₀=2·3⁹."},
+  {topic:"Kompleksni",text:"Modul kompleksnog broja z = 3 + 4i:",eq:"|z| = ?",diff:"m",choices:["5","7","1","25"],correct:0,sol:"|z|=√(9+16)=5."},
+  {topic:"Trigon.",text:"Rešenja sin x = 1/2 u [0, 2π]:",eq:"",diff:"m",choices:["π/6 i 5π/6","π/3 i 2π/3","π/4","π/6"],correct:0,sol:"sinx=1/2 → x=π/6 ili 5π/6."},
+  {topic:"Anal. geom.",text:"Ugao prave y = √3·x + 2 sa x-osom:",eq:"",diff:"m",choices:["60°","30°","45°","120°"],correct:0,sol:"k=tgα=√3 → α=60°."},
+  {topic:"Verov.",text:"Bacamo 2 kockice. P(zbir = 7) = ?",eq:"",diff:"m",choices:["1/6","5/36","7/36","1/4"],correct:0,sol:"6 povoljnih od 36: P=1/6."},
+  {topic:"Integrali",text:"Vrednost određenog integrala:",eq:"∫₀² 2x dx",diff:"m",choices:["4","2","8","0"],correct:0,sol:"[x²]₀²=4."},
+  {topic:"Kvadratne",text:"Jedna vrednost x u x² = 3x:",eq:"",diff:"e",choices:["x=3","x=−3","x=√3","x=1/3"],correct:0,sol:"x(x−3)=0 → x=0 ili x=3."},
+  {topic:"Skupovi",text:"Komplement A={2,4,6} u U={1,...,6}:",eq:"",diff:"e",choices:["{1,3,5}","{2,4,6}","∅","{1,2,3}"],correct:0,sol:"A'=U∖A={1,3,5}."},
+  {topic:"Derivacije",text:"Lokalni minimum funkcije f(x)=x³−3x je u:",eq:"",diff:"m",choices:["x=1","x=−1","x=0","x=3"],correct:0,sol:"f'=3x²−3=0 → x=±1. f''(1)=6>0 → min x=1."},
+  {topic:"Matrice",text:"I · A = ? (I je jedinična matrica)",eq:"",diff:"e",choices:["A","I","0","A²"],correct:0,sol:"Jedinična matrica je neutralni element: I·A=A."},
+  {topic:"Integrali",text:"Neodređeni integral:",eq:"∫(3x² + 2x) dx",diff:"m",choices:["x³+x²+C","3x³+2x²+C","x³+x+C","3x+2+C"],correct:0,sol:"∫3x²dx=x³, ∫2x dx=x². Dakle x³+x²+C."},
+];
+
+// ─── State ─────────────────────────────────────────────────
+let currentTopic = null, currentProbIdx = 0, currentSel = -1;
+let examAnswers = new Array(30).fill(-1), examCurrent = 0, examTimeLeft = 90*60, examTimer = null, examSubmitted = false, examStartTime = 0;
+
+// ─── Nav ───────────────────────────────────────────────────
+function nav(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  const nl = document.getElementById('nl-'+page);
+  if(nl) nl.classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ─── Topics ────────────────────────────────────────────────
+function buildTopics() {
+  const diffs = {e:'Lako',m:'Srednji',h:'Teško'};
+  document.getElementById('topic-grid').innerHTML = topics.map(t => `
+    <div class="topic-card${t.progress>60?' completed':''}" onclick="openTopic(${t.id})">
+      <div class="tc-header">
+        <span class="tc-num">${String(t.id).padStart(2,'0')}</span>
+        <span class="diff-badge diff-${t.diff}">${diffs[t.diff]}</span>
+      </div>
+      <div class="tc-name">${t.name}</div>
+      <div class="tc-sub">${t.sub}</div>
+      <div class="tc-bar"><div class="tc-fill" style="width:${t.progress}%"></div></div>
+      <div class="tc-stats"><span>${t.done}/${t.total}</span><span>${t.progress}%</span></div>
+    </div>`).join('');
+}
+
+// ─── Topic detail ──────────────────────────────────────────
+function openTopic(id) {
+  currentTopic = topics.find(t => t.id === id);
+  const diffs = {e:'Lako',m:'Srednji',h:'Teško'};
+  document.getElementById('breadcrumb-topic').textContent = currentTopic.name.toLowerCase();
+  document.getElementById('td-title').textContent = currentTopic.name;
+  const db = document.getElementById('td-diff-badge');
+  db.className = 'diff-badge diff-'+currentTopic.diff; db.textContent = diffs[currentTopic.diff];
+  document.getElementById('td-total').textContent = currentTopic.total + ' zadataka';
+  document.getElementById('td-acc').textContent = 'tačnost: ' + (60+id*3%20) + '%';
+  const th = currentTopic.theory;
+  document.getElementById('theory-panel-title').textContent = th.title;
+  document.getElementById('theory-p1').textContent = th.p1;
+  document.getElementById('theory-f1').textContent = th.f1;
+  document.getElementById('theory-p2').textContent = th.p2;
+  document.getElementById('theory-f2').textContent = th.f2;
+  buildProbList('all');
+  nav('topic');
+}
+
+function buildProbList(filter) {
+  const diffs = {e:'Lako',m:'Srednji',h:'Teško'};
+  const probs = sampleProblems[currentTopic?.id] || genProbs(currentTopic);
+  document.getElementById('prob-list').innerHTML = probs
+    .filter(p => filter==='all' || (filter==='solved'&&p._solved) || (filter==='unsolved'&&!p._solved))
+    .map((p,i) => `
+      <div class="prob-row${p._solved?' solved':''}" onclick="openProblem(${i})">
+        <span class="pr-check">${p._solved?'✓':''}</span>
+        <span class="pr-title">${p.title||'Zadatak '+(i+1)}</span>
+        <span class="pr-topic-tag">${p.source||currentTopic?.name}</span>
+        <span class="diff-badge diff-${p.diff}" style="width:fit-content">${diffs[p.diff]}</span>
+        <span class="pr-acc" style="text-align:right">${p.acc||65}%</span>
+      </div>`).join('');
+}
+
+function genProbs(topic) {
+  if(!topic) return [];
+  return Array.from({length:8},(_,i)=>({id:100+i,title:`Zadatak ${i+1} — ${topic.name}`,diff:['e','m','m','h'][i%4],acc:40+Math.round(Math.random()*45),_solved:i<2}));
+}
+
+function filterProbs(btn, f) {
+  document.querySelectorAll('.tab-pill').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  buildProbList(f);
+}
+
+// ─── Exercise ──────────────────────────────────────────────
+function openProblem(idx) {
+  const probs = sampleProblems[currentTopic?.id] || [];
+  if(!probs.length) { openProblemData(getFallbackProblem()); return; }
+  currentProbIdx = idx;
+  openProblemData(probs[idx] || probs[0]);
+}
+
+function openExerciseFromTopic() { openProblem(0); }
+
+function getFallbackProblem() {
+  return {id:99,title:"Primer zadatka",eq:"x²+5x+6=0",source:"Primer",diff:"m",xp:3,solved:500,acc:72,correct:0,
+    choices:["x=−2, x=−3","x=2, x=3","x=1, x=6","x=−1, x=−6"],
+    theoryLabel:"FAKTORIZACIJA",theoryText:"Tražimo p,q: p+q=5, p·q=6.",theoryFormula:"x²+5x+6=(x+2)(x+3)=0",
+    probText:"Nađi korene date kvadratne jednačine.",
+    steps:[{t:"Tražimo p,q: p+q=5, p·q=6 → p=2, q=3",e:""},{t:"Rešenje:",e:"x=−2  ili  x=−3"}]};
+}
+
+function openProblemData(p) {
+  currentSel = -1;
+  const diffs = {e:'Lako',m:'Srednji',h:'Teško'};
+  document.getElementById('bc-topic').textContent = currentTopic?.name?.toLowerCase() || 'oblast';
+  document.getElementById('bc-prob').textContent = '#'+p.id;
+  document.getElementById('ex-id').textContent = '#'+p.id;
+  const tt = document.getElementById('ex-topic-tag');
+  tt.textContent = currentTopic?.name || 'Oblast';
+  const db = document.getElementById('ex-diff-badge');
+  db.className='diff-badge diff-'+p.diff; db.textContent=diffs[p.diff];
+  document.getElementById('ex-source-tag').textContent = p.source;
+  document.getElementById('ex-title').textContent = p.title;
+  document.getElementById('ex-theory-label').textContent = p.theoryLabel;
+  document.getElementById('ex-theory-text').textContent = p.theoryText;
+  document.getElementById('ex-theory-formula').textContent = p.theoryFormula;
+  document.getElementById('ex-prob-text').textContent = p.probText || 'Data je jednačina:';
+  document.getElementById('ex-prob-eq').textContent = p.eq;
+  document.getElementById('ex-solved-count').textContent = 'Rešeno: '+p.solved.toLocaleString()+'×';
+  document.getElementById('ex-accuracy').textContent = 'Tačnost: '+p.acc+'%';
+  document.getElementById('ei-topic').textContent = currentTopic?.name||'—';
+  document.getElementById('ei-diff').textContent = diffs[p.diff];
+  document.getElementById('ei-source').textContent = p.source;
+  document.getElementById('ei-xp').textContent = '+'+p.xp+' XP';
+  document.getElementById('choices').innerHTML = p.choices.map((c,i)=>`
+    <div class="choice" id="ch-${i}" onclick="pick(${i},${p.correct})">
+      <div class="choice-letter">${'ABCD'[i]}</div>
+      <div class="choice-text">${c}</div>
+    </div>`).join('');
+  document.getElementById('solution-panel').style.display='none';
+  document.getElementById('btn-submit').disabled=true;
+  document.getElementById('sol-steps').innerHTML = p.steps.map((s,i)=>`
+    <div class="sol-step">
+      <div class="sol-num">${i+1}</div>
+      <div class="sol-text">${s.t}${s.e?'<div class="sol-eq">'+s.e+'</div>':''}</div>
+    </div>`).join('');
+  nav('exercise');
+  window._currentProblem = p;
+}
+
+function pick(i, correct) {
+  if(document.getElementById('solution-panel').style.display!=='none') return;
+  currentSel=i; window._correct=correct;
+  document.querySelectorAll('.choice').forEach((c,j)=>c.classList.toggle('selected',j===i));
+  document.getElementById('btn-submit').disabled=false;
+}
+
+function submitAnswer() {
+  if(currentSel<0) return;
+  document.querySelectorAll('.choice').forEach((c,j)=>{
+    c.classList.remove('selected');
+    if(j===window._correct) c.classList.add('correct');
+    else if(j===currentSel&&currentSel!==window._correct) c.classList.add('wrong');
+    c.classList.add('locked');
+  });
+  document.getElementById('btn-submit').disabled=true;
+  const ok = currentSel===window._correct;
+  const panel = document.getElementById('solution-panel');
+  const bar = document.getElementById('sol-title-bar');
+  panel.style.display='block';
+  bar.innerHTML=`<span class="result-pill ${ok?'ok':'bad'}" style="display:inline-flex;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:500">${ok?'✓ Tačno — +'+window._currentProblem.xp+' XP':'✕ Netačno'}</span>`;
+}
+
+function showSolution() {
+  document.getElementById('solution-panel').style.display='block';
+  document.getElementById('sol-title-bar').innerHTML='▸ KORAK PO KORAK';
+}
+
+function nextProblem() {
+  const probs = sampleProblems[currentTopic?.id]||[];
+  if(probs.length) openProblem((currentProbIdx+1)%probs.length);
+}
+
+// ─── Exams ─────────────────────────────────────────────────
+function buildExams() {
+  document.getElementById('exam-grid').innerHTML = exams.map(e=>`
+    <div class="exam-card${e.isNew?' new-exam':''}" onclick="startExam('${e.fac}',${e.yr})">
+      ${e.isNew?'<div class="exam-new-tag">NOVO</div>':''}
+      <div class="exam-year">${e.yr}</div>
+      <div class="exam-fac">${e.fac}</div>
+      <div class="exam-details">
+        <span>${e.q} pitanja</span><span>·</span><span>${e.min} min</span>
+        ${e.done?`<span>·</span><span style="color:var(--blue)">${e.done}% urađeno</span>`:''}
+      </div>
+      <div class="exam-progress-bar"><div class="exam-progress-fill" style="width:${e.done}%"></div></div>
+      <div class="exam-progress-text">${e.done?e.done+'% završeno':'Nije početo'}</div>
+    </div>`).join('');
+}
+
+function filt(btn, group, val) {
+  const pills = btn.closest('.filter-pills');
+  pills.querySelectorAll('.filter-pill').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function lbFilt(btn) {
+  document.querySelectorAll('#lb-filter-pills .filter-pill').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// ─── Exam overlay ──────────────────────────────────────────
+function startExam(fac, yr) {
+  examAnswers = new Array(30).fill(-1);
+  examCurrent = 0; examTimeLeft = 90*60; examSubmitted = false; examStartTime = Date.now();
+  document.getElementById('exam-overlay-title').textContent = fac+' — Prijemni '+yr;
+  document.getElementById('exam-overlay').style.display='flex';
+  renderExamQuestion();
+  startExamTimer();
+}
+
+function closeExam() {
+  clearInterval(examTimer);
+  document.getElementById('exam-overlay').style.display='none';
+}
+
+function startExamTimer() {
+  clearInterval(examTimer);
+  examTimer = setInterval(()=>{
+    examTimeLeft--;
+    const m=Math.floor(examTimeLeft/60), s=examTimeLeft%60;
+    const el=document.getElementById('exam-timer');
+    el.textContent=m+':'+(s<10?'0':'')+s;
+    el.className='exam-timer'+(examTimeLeft<600?' warn':'')+(examTimeLeft<120?' danger':'');
+    if(examTimeLeft<=0){clearInterval(examTimer);submitExam();}
+  },1000);
+}
+
+function buildExamQGrid() {
+  const diffs={e:'Lako',m:'Srednji',h:'Teško'};
+  document.getElementById('exam-q-grid').innerHTML = examQuestions.map((_,i)=>{
+    let cls='exam-q-btn';
+    if(examSubmitted) cls+=(examAnswers[i]===examQuestions[i].correct?' correct':examAnswers[i]>=0?' wrong':'');
+    else cls+=(i===examCurrent?' current':examAnswers[i]>=0?' answered':'');
+    return `<button class="${cls}" onclick="goToExamQ(${i})">${i+1}</button>`;
+  }).join('');
+  const done=examAnswers.filter(a=>a>=0).length;
+  document.getElementById('exam-prog-text').textContent=done+'/30';
+  document.getElementById('exam-prog-fill').style.width=Math.round(done/30*100)+'%';
+  const pts=examAnswers.reduce((s,a,i)=>s+(a===examQuestions[i].correct?2:0),0);
+  document.getElementById('exam-score-live').textContent=pts+' / 60 bodova';
+}
+
+function renderExamQuestion() {
+  const q = examQuestions[examCurrent];
+  const diffs={e:'Lako',m:'Srednji',h:'Teško'};
+  document.getElementById('eqh-num').textContent='Pitanje '+(examCurrent+1)+' od 30';
+  const dt=document.getElementById('eqh-diff');
+  dt.className='diff-badge diff-'+q.diff; dt.textContent=diffs[q.diff];
+  document.getElementById('eqh-topic').textContent=q.topic;
+  document.getElementById('exam-q-body').innerHTML=`
+    <p style="font-size:14px;line-height:1.75;color:var(--text);margin-bottom:${q.eq?'6px':'0'}">${q.text}</p>
+    ${q.eq?`<div class="prob-eq" style="font-size:16px;margin:14px 0">${q.eq}</div>`:''}
+    <div style="display:flex;flex-direction:column;gap:7px;margin-top:16px">
+      ${q.choices.map((c,i)=>{
+        let cls='choice'+(examAnswers[examCurrent]===i?' selected':'');
+        if(examSubmitted){cls='choice locked'+(i===q.correct?' correct':examAnswers[examCurrent]===i&&i!==q.correct?' wrong':'');}
+        return`<div class="${cls}" onclick="examPick(${i})"><div class="choice-letter">${'ABCD'[i]}</div><div class="choice-text">${c}</div></div>`;
+      }).join('')}
+    </div>
+    ${examSubmitted?`<div style="margin-top:14px;background:var(--green-bg);border-left:2px solid var(--green);padding:12px 14px;border-radius:0 6px 6px 0;font-size:12px;color:var(--text2)">${q.sol}</div>`:''}
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:18px;padding-top:14px;border-top:1px solid var(--border)">
+      <button class="btn btn-secondary" onclick="goToExamQ(${examCurrent-1})" ${examCurrent===0?'disabled':''}>← Prethodno</button>
+      ${examCurrent<29?`<button class="btn btn-secondary" onclick="goToExamQ(${examCurrent+1})">Sledeće →</button>`:`<button class="btn btn-primary" onclick="submitExam()">Predaj ispit</button>`}
+    </div>`;
+  buildExamQGrid();
+}
+
+function examPick(i) {
+  if(examSubmitted) return;
+  examAnswers[examCurrent]=i;
+  renderExamQuestion();
+}
+
+function goToExamQ(i) {
+  if(i<0||i>29) return;
+  examCurrent=i; renderExamQuestion();
+}
+
+function submitExam() {
+  clearInterval(examTimer);
+  examSubmitted=true;
+  const correct=examAnswers.filter((a,i)=>a===examQuestions[i].correct).length;
+  const pts=correct*2;
+  const pass=pts>=36;
+  document.getElementById('exam-overlay').innerHTML=`
+    <div class="exam-topbar">
+      <div><div class="exam-topbar-title">Rezultati — ETF Beograd 2023</div></div>
+      <button class="btn btn-ghost" style="margin-left:auto" onclick="document.getElementById('exam-overlay').style.display='none'">Zatvori</button>
+    </div>
+    <div style="max-width:700px;margin:40px auto;padding:0 24px">
+      <div style="text-align:center;margin-bottom:32px">
+        <div style="font-family:var(--font-disp);font-size:56px;font-weight:800;letter-spacing:-2px;color:${pass?'var(--green)':'var(--red)'}">${pts}</div>
+        <div style="font-size:14px;color:var(--text2);margin-bottom:14px">od 60 mogućih bodova · ${correct} tačnih od 30</div>
+        <div style="display:inline-flex;align-items:center;gap:8px;padding:8px 22px;border-radius:99px;font-size:13px;font-weight:500;border:1px solid;${pass?'background:var(--green-bg);color:var(--green);border-color:var(--green-dim)':'background:var(--red-bg);color:var(--red);border-color:#5a1d1a'}">${pass?'✓ Položio — prolaz za ETF':'✕ Nedovoljno — potrebno 36+ bodova'}</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:24px">
+        ${[['Tačnih','var(--green)',correct],['Netačnih','var(--red)',examAnswers.filter((a,i)=>a>=0&&a!==examQuestions[i].correct).length],['Preskočenih','var(--text3)',examAnswers.filter(a=>a<0).length],['Bodova','var(--orange)',pts+'/60']].map(([l,c,v])=>`
+        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center">
+          <div style="font-family:var(--font-mono);font-size:24px;font-weight:500;color:${c};margin-bottom:4px">${v}</div>
+          <div style="font-size:11px;color:var(--text3)">${l}</div>
+        </div>`).join('')}
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:18px">
+        <div style="font-family:var(--font-disp);font-size:13px;font-weight:600;margin-bottom:14px">Rezultati po oblastima</div>
+        ${[...new Set(examQuestions.map(q=>q.topic))].map(topic=>{
+          const qs=examQuestions.filter(q=>q.topic===topic);
+          const ok=qs.filter((_,i)=>examAnswers[examQuestions.indexOf(qs[i])]===qs[i].correct).length;
+          const pct=Math.round(ok/qs.length*100);
+          return`<div style="margin-bottom:10px">
+            <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+              <span style="color:var(--text2)">${topic}</span>
+              <span style="font-family:var(--font-mono);color:${pct>=60?'var(--green)':'var(--red)'}">${ok}/${qs.length}</span>
+            </div>
+            <div style="height:4px;background:var(--border);border-radius:2px">
+              <div style="height:4px;border-radius:2px;width:${pct}%;background:${pct>=60?'var(--green)':'var(--red)'}"></div>
+            </div>
+          </div>`;}).join('')}
+      </div>
+    </div>`;
+  document.getElementById('exam-overlay').style.display='flex';
+  document.getElementById('exam-overlay').style.flexDirection='column';
+}
+
+// ─── Profile ───────────────────────────────────────────────
+function buildActivityGrid() {
+  const grid=document.getElementById('act-grid');
+  const monthsEl=document.getElementById('act-months');
+  grid.innerHTML=''; monthsEl.innerHTML='';
+  const today=new Date(), start=new Date(today);
+  start.setDate(start.getDate()-364);
+  const paddedStart=new Date(start);
+  paddedStart.setDate(paddedStart.getDate()-start.getDay());
+  const rng=s=>{let x=s^0xdeadbeef;x=(x^(x>>>17))*0x45d9f3b;x=(x^(x>>>16))*0x45d9f3b;return(x^(x>>>16))>>>0};
+  let d=new Date(paddedStart); const spacers=Array(53).fill(''); let lastM=-1;
+  const mNames=['Jan','Feb','Mar','Apr','Maj','Jun','Jul','Avg','Sep','Okt','Nov','Dec'];
+  for(let w=0;w<53;w++){
+    const col=document.createElement('div'); col.className='act-col';
+    for(let day=0;day<7;day++){
+      const date=new Date(d); const inR=date>=start&&date<=today;
+      const s2=date.getFullYear()*10000+date.getMonth()*100+date.getDate();
+      const r=rng(s2)%100; let lv=0;
+      if(inR){lv=r<35?0:r<55?1:r<75?2:r<90?3:4;}
+      if(day===0&&date.getMonth()!==lastM&&w>0){spacers[w]=mNames[date.getMonth()];lastM=date.getMonth();}
+      const cell=document.createElement('div'); cell.className='act-cell c'+lv;
+      if(!inR) cell.style.opacity='0';
+      const ds=date.toLocaleDateString('sr-RS',{day:'numeric',month:'short',year:'numeric'});
+      const cts=[0,2,5,9,14];
+      cell.title=ds+(inR?': '+cts[lv]+' zadataka':'');
+      cell.onmouseenter=()=>{document.getElementById('act-tooltip').textContent=inR?ds+' — '+cts[lv]+' zadataka':'';};
+      col.appendChild(cell); d.setDate(d.getDate()+1);
+    }
+    grid.appendChild(col);
+  }
+  monthsEl.innerHTML=spacers.map(m=>`<span class="act-month-label" style="width:12px">${m}</span>`).join('');
+}
+
+function buildTopicProgress() {
+  document.getElementById('topic-progress-list').innerHTML = topics.slice(0,8).map(t=>`
+    <div class="tp-row">
+      <div class="tp-label-row"><span class="tp-name">${t.name}</span><span class="tp-pct">${t.progress}%</span></div>
+      <div class="tp-track"><div class="tp-fill" style="width:${t.progress}%"></div></div>
+    </div>`).join('');
+}
+
+// ─── Leaderboard ───────────────────────────────────────────
+function buildLeaderboard() {
+  const avBg={blue:'var(--blue-bg)',green:'var(--green-bg)',orange:'var(--orange-bg)'};
+  const avCol={blue:'var(--blue)',green:'var(--green)',orange:'var(--orange)'};
+  document.getElementById('lb-body').innerHTML = lbData.map(u=>`
+    <div class="lb-row${u.isMe?' me':''}">
+      <div class="lb-rank${u.rank===1?' gold':u.rank===2?' silver':u.rank===3?' bronze':''}">${u.rank===1?'🥇':u.rank===2?'🥈':u.rank===3?'🥉':u.rank}</div>
+      <div class="lb-user">
+        <div class="lb-avatar" style="background:${avBg[u.avc]||'var(--bg3)'};color:${avCol[u.avc]||'var(--text2)'};">${u.av}</div>
+        <div><div class="lb-name">${u.name}${u.isMe?' <span style="font-size:10px;color:var(--blue);font-family:var(--font-mono)">(ti)</span>':''}</div><div class="lb-school">${u.school}</div></div>
+      </div>
+      <div class="lb-val green">${u.xp.toLocaleString()}</div>
+      <div class="lb-val">${u.acc}%</div>
+      <div class="lb-val">${u.solved}</div>
+    </div>`).join('');
+}
+
+// ─── Init ──────────────────────────────────────────────────
+buildTopics(); buildExams(); buildActivityGrid(); buildTopicProgress(); buildLeaderboard();
+</script>
+</body>
+</html>

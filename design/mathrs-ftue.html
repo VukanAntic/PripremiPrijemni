@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MathRS — Registracija</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:#0d1117; --bg2:#161b22; --bg3:#21262d;
+  --border:#30363d; --border2:#444c56;
+  --text:#e6edf3; --text2:#8b949e; --text3:#6e7681;
+  --green:#3fb950; --green-bg:#0d2217; --green-dim:#196c2e;
+  --blue:#58a6ff; --blue-bg:#0c1e35;
+  --orange:#d29922; --orange-bg:#2a1f00;
+  --red:#f85149; --red-bg:#2d1117;
+  --font-ui:'DM Sans',sans-serif;
+  --font-disp:'Syne',sans-serif;
+  --font-mono:'JetBrains Mono',monospace;
+  --radius:6px; --radius-lg:10px; --tr:150ms ease;
+}
+html,body {
+  background:var(--bg); color:var(--text);
+  font-family:var(--font-ui); font-size:14px; line-height:1.5;
+  min-height:100vh; display:flex; align-items:center; justify-content:center;
+}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+.shell {
+  width:100%; min-height:100vh; padding:40px 24px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+}
+
+/* Logo */
+.logo-wrap { display:flex;align-items:center;gap:10px;margin-bottom:36px;animation:fadeDown .4s ease both; }
+.logo-mark { width:32px;height:32px;border-radius:8px;background:var(--green);display:flex;align-items:center;justify-content:center;font-family:var(--font-disp);font-size:17px;font-weight:800;color:#000; }
+.logo-text { font-family:var(--font-disp);font-size:20px;font-weight:800;letter-spacing:-.5px; }
+.logo-text span { color:var(--green); }
+
+/* Card */
+.card {
+  width:100%; max-width:480px;
+  background:var(--bg2); border:1px solid var(--border); border-radius:14px;
+  overflow:hidden; animation:fadeUp .4s ease both .1s;
+}
+
+/* Progress */
+.progress-track { height:2px; background:var(--border); }
+.progress-fill  { height:2px; background:var(--green); border-radius:0 2px 2px 0; transition:width .5s cubic-bezier(.4,0,.2,1); }
+
+/* Step */
+.step-wrap { display:none; }
+.step-wrap.visible { display:block; }
+.step-header { padding:26px 26px 0; }
+.step-meta { font-family:var(--font-mono);font-size:11px;color:var(--text3);letter-spacing:.6px;margin-bottom:10px; }
+.step-meta .cur { color:var(--green); }
+.step-title { font-family:var(--font-disp);font-size:20px;font-weight:700;letter-spacing:-.4px;margin-bottom:5px; }
+.step-sub { font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:20px; }
+.step-body { padding:0 26px; }
+
+/* Fields */
+.field-group { display:flex;flex-direction:column;gap:5px;margin-bottom:10px; }
+.field-row   { display:grid;grid-template-columns:1fr 1fr;gap:10px; }
+.field-label { font-family:var(--font-mono);font-size:10px;color:var(--text3);letter-spacing:.5px; }
+
+.field-input {
+  background:var(--bg); border:1px solid var(--border); border-radius:var(--radius);
+  padding:10px 12px; font-family:var(--font-ui); font-size:14px; color:var(--text);
+  outline:none; width:100%; transition:border-color var(--tr);
+}
+.field-input:focus { border-color:var(--blue); }
+.field-input::placeholder { color:var(--text3); }
+.field-input.ok  { border-color:var(--green-dim); }
+.field-input.err { border-color:var(--red); }
+
+/* Password wrapper — eye toggle */
+.pw-wrap { position:relative; }
+.pw-wrap .field-input { padding-right:40px; }
+.pw-eye {
+  position:absolute; right:11px; top:50%; translate:0 -50%;
+  background:none; border:none; cursor:pointer; color:var(--text3);
+  font-size:14px; padding:2px; display:flex; align-items:center;
+  transition:color var(--tr);
+}
+.pw-eye:hover { color:var(--text2); }
+
+/* Strength bar */
+.strength-row { display:flex; align-items:center; gap:8px; margin-top:6px; }
+.strength-bars { display:flex; gap:3px; flex:1; }
+.sbar { flex:1; height:3px; border-radius:2px; background:var(--border); transition:background .3s; }
+.sbar.weak   { background:var(--red); }
+.sbar.medium { background:var(--orange); }
+.sbar.strong { background:var(--green); }
+.strength-label { font-family:var(--font-mono); font-size:10px; color:var(--text3); width:56px; text-align:right; transition:color .3s; }
+.strength-label.weak   { color:var(--red); }
+.strength-label.medium { color:var(--orange); }
+.strength-label.strong { color:var(--green); }
+
+/* Hint row */
+.hint-row {
+  display:flex; align-items:center; gap:7px;
+  padding:9px 12px; border-radius:var(--radius); border:1px solid var(--border);
+  font-size:12px; color:var(--text3); background:var(--bg);
+  margin-bottom:2px; transition:all var(--tr);
+}
+.hint-row.ok  { border-color:var(--green-dim); color:var(--green); }
+.hint-row.err { border-color:var(--red); color:var(--red); }
+.hint-dot { width:6px; height:6px; border-radius:50%; background:currentColor; flex-shrink:0; }
+
+/* Divider */
+.divider {
+  display:flex; align-items:center; gap:10px;
+  margin:14px 0; color:var(--text3); font-size:12px;
+}
+.divider::before,.divider::after {
+  content:''; flex:1; height:1px; background:var(--border);
+}
+
+/* Login link */
+.login-link { text-align:center; font-size:12px; color:var(--text3); margin-bottom:4px; }
+.login-link a { color:var(--blue); cursor:pointer; text-decoration:none; }
+.login-link a:hover { text-decoration:underline; }
+
+/* Select */
+.select-wrap { position:relative; margin-bottom:8px; }
+.select-wrap::after {
+  content:''; position:absolute; right:12px; top:50%; translate:0 -50%;
+  border:5px solid transparent; border-top-color:var(--text3); pointer-events:none; margin-top:2px;
+}
+.field-select {
+  appearance:none; -webkit-appearance:none;
+  background:var(--bg); border:1px solid var(--border); border-radius:var(--radius);
+  padding:10px 36px 10px 12px; font-family:var(--font-ui); font-size:14px;
+  color:var(--text3); outline:none; width:100%; cursor:pointer;
+  transition:border-color var(--tr), color var(--tr);
+}
+.field-select:focus { border-color:var(--blue); }
+.field-select.chosen { color:var(--text); border-color:var(--green-dim); }
+.field-select option { background:var(--bg2); color:var(--text); }
+.select-note { font-size:12px; color:var(--text3); padding:6px 0 2px; display:flex; align-items:center; gap:6px; transition:color var(--tr); }
+.select-note.ok { color:var(--green); }
+
+/* DOB */
+.dob-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:10px; }
+.dob-input {
+  background:var(--bg); border:1px solid var(--border); border-radius:var(--radius);
+  padding:10px 12px; font-family:var(--font-mono); font-size:14px; color:var(--text);
+  outline:none; width:100%; transition:border-color var(--tr);
+  -moz-appearance:textfield;
+}
+.dob-input::-webkit-inner-spin-button,.dob-input::-webkit-outer-spin-button { -webkit-appearance:none; }
+.dob-input:focus { border-color:var(--blue); }
+.dob-input::placeholder { color:var(--text3); }
+
+/* Topics */
+.topics-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:6px; }
+.topic-opt {
+  display:flex; align-items:center; gap:9px;
+  border:1px solid var(--border); border-radius:var(--radius);
+  padding:9px 11px; cursor:pointer; background:var(--bg);
+  transition:border-color var(--tr), background var(--tr);
+}
+.topic-opt:hover { border-color:var(--border2); background:var(--bg3); }
+.topic-opt.sel { border-color:var(--orange); background:var(--orange-bg); }
+.topic-opt.none-opt { border-style:dashed; grid-column:span 2; }
+.topic-opt.none-opt.sel { border-color:var(--green); background:var(--green-bg); border-style:dashed; }
+.to-box {
+  width:14px; height:14px; border-radius:3px; border:1px solid var(--border2);
+  flex-shrink:0; display:flex; align-items:center; justify-content:center;
+  font-size:9px; font-weight:700; color:#000; transition:all var(--tr);
+}
+.topic-opt.sel .to-box { background:var(--orange); border-color:var(--orange); }
+.topic-opt.none-opt.sel .to-box { background:var(--green); border-color:var(--green); }
+.to-name { font-size:12px; font-weight:500; }
+.to-diff { font-family:var(--font-mono); font-size:10px; color:var(--text3); margin-top:1px; }
+
+/* Footer */
+.step-footer {
+  padding:16px 26px 24px;
+  display:flex; align-items:center; justify-content:space-between;
+  margin-top:18px; border-top:1px solid var(--border);
+}
+.dots { display:flex; gap:5px; align-items:center; }
+.dot { width:6px; height:6px; border-radius:50%; background:var(--border2); transition:all .3s; }
+.dot.active { background:var(--green); width:18px; border-radius:3px; }
+.dot.done   { background:var(--green-dim); }
+
+.btn-back {
+  background:none; border:1px solid var(--border); border-radius:var(--radius);
+  padding:9px 18px; font-size:13px; color:var(--text2); cursor:pointer;
+  font-family:var(--font-ui); transition:all var(--tr);
+}
+.btn-back:hover { border-color:var(--border2); color:var(--text); }
+.btn-next {
+  background:var(--green); border:none; border-radius:var(--radius);
+  padding:9px 22px; font-size:13px; font-weight:500; color:#000;
+  cursor:pointer; font-family:var(--font-ui); transition:all var(--tr);
+  display:flex; align-items:center; gap:7px;
+}
+.btn-next:hover:not(:disabled) { background:#52d467; }
+.btn-next:disabled { opacity:.35; cursor:not-allowed; }
+.arr { font-size:14px; line-height:1; transition:transform .2s; }
+.btn-next:not(:disabled):hover .arr { transform:translateX(3px); }
+
+/* Success */
+.success { display:none; width:100%; max-width:480px; text-align:center; animation:fadeUp .5s ease both; }
+.success.visible { display:block; }
+.s-icon {
+  width:68px; height:68px; border-radius:50%;
+  background:var(--green-bg); border:2px solid var(--green);
+  display:flex; align-items:center; justify-content:center; font-size:28px;
+  margin:0 auto 20px; animation:popIn .5s cubic-bezier(.175,.885,.32,1.275) both .2s;
+}
+.s-title { font-family:var(--font-disp); font-size:26px; font-weight:800; letter-spacing:-.5px; margin-bottom:8px; }
+.s-sub   { font-size:13px; color:var(--text2); line-height:1.7; margin-bottom:24px; }
+.summary {
+  background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius-lg);
+  padding:18px; text-align:left; margin-bottom:20px;
+}
+.sum-row { display:flex; align-items:flex-start; justify-content:space-between; padding:9px 0; border-bottom:1px solid var(--border); font-size:13px; gap:12px; }
+.sum-row:last-child { border-bottom:none; padding-bottom:0; }
+.sum-key { color:var(--text2); flex-shrink:0; }
+.sum-val { font-family:var(--font-mono); font-size:12px; text-align:right; display:flex; flex-wrap:wrap; gap:4px; justify-content:flex-end; }
+.stag { padding:2px 8px; border-radius:99px; font-size:10px; }
+.stag.green  { background:var(--green-bg);  color:var(--green);  border:1px solid var(--green-dim); }
+.stag.orange { background:var(--orange-bg); color:var(--orange); border:1px solid #5a3d00; }
+.btn-go {
+  background:var(--green); border:none; border-radius:var(--radius);
+  padding:12px 36px; font-size:15px; font-weight:600; color:#000;
+  cursor:pointer; font-family:var(--font-disp); transition:all var(--tr); letter-spacing:-.2px;
+}
+.btn-go:hover { background:#52d467; transform:translateY(-1px); }
+
+/* Animations */
+@keyframes fadeUp  { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeDown{ from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:translateY(0)} }
+@keyframes popIn   { from{opacity:0;transform:scale(.5)} to{opacity:1;transform:scale(1)} }
+@keyframes stepIn  { from{opacity:0;transform:translateX(22px)} to{opacity:1;transform:translateX(0)} }
+@keyframes stepBack{ from{opacity:0;transform:translateX(-22px)} to{opacity:1;transform:translateX(0)} }
+.anim-in   { animation:stepIn  .22s ease both; }
+.anim-back { animation:stepBack .22s ease both; }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <div class="logo-wrap">
+    <div class="logo-mark">M</div>
+    <div class="logo-text">Math<span>RS</span></div>
+  </div>
+
+  <div class="card" id="card">
+    <div class="progress-track">
+      <div class="progress-fill" id="prog" style="width:0%"></div>
+    </div>
+
+    <!-- ── Step 1: Email & Password ───────────────────── -->
+    <div class="step-wrap visible anim-in" id="step-1">
+      <div class="step-header">
+        <div class="step-meta"><span class="cur">01</span> / 05 — Nalog</div>
+        <div class="step-title">Kreiraj nalog</div>
+        <div class="step-sub">Potreban ti je nalog da pratiš napredak i pristupiš rang listi.</div>
+      </div>
+      <div class="step-body">
+        <div class="field-group">
+          <div class="field-label">EMAIL ADRESA</div>
+          <input class="field-input" id="inp-email" type="email" placeholder="npr. marko@gmail.com" oninput="validateAuth()" autocomplete="email">
+        </div>
+        <div class="field-group">
+          <div class="field-label">LOZINKA</div>
+          <div class="pw-wrap">
+            <input class="field-input" id="inp-pw" type="password" placeholder="Minimum 8 karaktera" oninput="validateAuth()" autocomplete="new-password">
+            <button class="pw-eye" type="button" onclick="togglePw('inp-pw','eye-1')" id="eye-1" tabindex="-1">
+              <svg id="eye-1-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          <div class="strength-row">
+            <div class="strength-bars">
+              <div class="sbar" id="sb1"></div>
+              <div class="sbar" id="sb2"></div>
+              <div class="sbar" id="sb3"></div>
+              <div class="sbar" id="sb4"></div>
+            </div>
+            <div class="strength-label" id="strength-label"></div>
+          </div>
+        </div>
+        <div class="field-group">
+          <div class="field-label">POTVRDI LOZINKU</div>
+          <div class="pw-wrap">
+            <input class="field-input" id="inp-pw2" type="password" placeholder="Ponovi lozinku" oninput="validateAuth()" autocomplete="new-password">
+            <button class="pw-eye" type="button" onclick="togglePw('inp-pw2','eye-2')" id="eye-2" tabindex="-1">
+              <svg id="eye-2-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="hint-row" id="auth-hint">
+          <div class="hint-dot"></div>
+          <span id="auth-hint-text">Unesite email i lozinku da nastavite</span>
+        </div>
+        <div class="divider">ili</div>
+        <div class="login-link">Već imaš nalog? <a onclick="alert('Prijava nije dostupna u prototipu.')">Prijavi se</a></div>
+      </div>
+      <div class="step-footer">
+        <div class="dots">
+          <div class="dot active"></div>
+          <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+        </div>
+        <button class="btn-next" id="btn-1" disabled onclick="goTo(2)">
+          Nastavi <span class="arr">→</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ── Step 2: Name ───────────────────────────────── -->
+    <div class="step-wrap" id="step-2">
+      <div class="step-header">
+        <div class="step-meta"><span class="cur">02</span> / 05 — Osnovno</div>
+        <div class="step-title">Kako se zoveš?</div>
+        <div class="step-sub">Ovo će biti prikazano na tvom profilu i rang listi.</div>
+      </div>
+      <div class="step-body">
+        <div class="field-row" style="margin-bottom:10px">
+          <div class="field-group" style="margin-bottom:0">
+            <div class="field-label">IME</div>
+            <input class="field-input" id="inp-first" type="text" placeholder="npr. Marko" oninput="validateName()" autocomplete="given-name">
+          </div>
+          <div class="field-group" style="margin-bottom:0">
+            <div class="field-label">PREZIME</div>
+            <input class="field-input" id="inp-last" type="text" placeholder="npr. Jovanović" oninput="validateName()" autocomplete="family-name">
+          </div>
+        </div>
+        <div class="hint-row" id="name-hint">
+          <div class="hint-dot"></div>
+          <span id="name-hint-text">Unesite ime i prezime da nastavite</span>
+        </div>
+      </div>
+      <div class="step-footer">
+        <div class="dots">
+          <div class="dot done"></div>
+          <div class="dot active"></div>
+          <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn-back" onclick="goTo(1,'back')">← Nazad</button>
+          <button class="btn-next" id="btn-2" disabled onclick="goTo(3)">
+            Nastavi <span class="arr">→</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Step 3: Faculty ────────────────────────────── -->
+    <div class="step-wrap" id="step-3">
+      <div class="step-header">
+        <div class="step-meta"><span class="cur">03</span> / 05 — Cilj</div>
+        <div class="step-title">Za koji fakultet se pripremаš?</div>
+        <div class="step-sub">Prilagodićemo sadržaj i arhivu ispita. Ako još nisi siguran, to je u redu.</div>
+      </div>
+      <div class="step-body">
+        <div class="select-wrap">
+          <select class="field-select" id="fac-select" onchange="validateFaculty()">
+            <option value="" disabled selected>— Izaberi fakultet —</option>
+            <optgroup label="Beograd">
+              <option value="etf">Elektrotehnički fakultet (ETF)</option>
+              <option value="mas">Mašinski fakultet</option>
+              <option value="grf">Građevinski fakultet</option>
+              <option value="rgf">Rudarsko-geološki fakultet (RGF)</option>
+              <option value="fon">Fakultet organizacionih nauka (FON)</option>
+              <option value="sf">Saobraćajni fakultet</option>
+              <option value="tmf">Tehnološko-metalurški fakultet (TMF)</option>
+              <option value="pmf-bg">PMF Beograd</option>
+              <option value="matf">Matematički fakultet (MATF)</option>
+              <option value="fizika">Fizički fakultet</option>
+              <option value="hemija">Hemijski fakultet</option>
+            </optgroup>
+            <optgroup label="Novi Sad">
+              <option value="ftn">Fakultet tehničkih nauka (FTN)</option>
+              <option value="pmf-ns">PMF Novi Sad</option>
+              <option value="tf-ns">Tehnološki fakultet Novi Sad</option>
+            </optgroup>
+            <optgroup label="Niš">
+              <option value="elfak">Elektronski fakultet</option>
+              <option value="mf-nis">Mašinski fakultet Niš</option>
+              <option value="gf-nis">Građevinsko-arhitektonski fakultet</option>
+            </optgroup>
+            <optgroup label="Ostalo">
+              <option value="other">Drugi fakultet (nije na listi)</option>
+              <option value="none">Nisam siguran / Ne prijavljujem se</option>
+            </optgroup>
+          </select>
+        </div>
+        <div class="select-note" id="fac-note">
+          <div class="hint-dot" style="background:var(--text3)"></div>
+          <span id="fac-note-text">Izaberi fakultet iz liste iznad</span>
+        </div>
+      </div>
+      <div class="step-footer">
+        <div class="dots">
+          <div class="dot done"></div><div class="dot done"></div>
+          <div class="dot active"></div>
+          <div class="dot"></div><div class="dot"></div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn-back" onclick="goTo(2,'back')">← Nazad</button>
+          <button class="btn-next" id="btn-3" disabled onclick="goTo(4)">
+            Nastavi <span class="arr">→</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Step 4: Date of birth ──────────────────────── -->
+    <div class="step-wrap" id="step-4">
+      <div class="step-header">
+        <div class="step-meta"><span class="cur">04</span> / 05 — Profil</div>
+        <div class="step-title">Datum rođenja</div>
+        <div class="step-sub">Koristimo ovo za personalizovani plan učenja i statistike.</div>
+      </div>
+      <div class="step-body">
+        <div class="dob-grid">
+          <div class="field-group" style="margin-bottom:0">
+            <div class="field-label">DAN</div>
+            <input class="dob-input" id="dob-d" type="number" min="1" max="31" placeholder="DD" oninput="validateDob()">
+          </div>
+          <div class="field-group" style="margin-bottom:0">
+            <div class="field-label">MESEC</div>
+            <input class="dob-input" id="dob-m" type="number" min="1" max="12" placeholder="MM" oninput="validateDob()">
+          </div>
+          <div class="field-group" style="margin-bottom:0">
+            <div class="field-label">GODINA</div>
+            <input class="dob-input" id="dob-y" type="number" min="1985" max="2012" placeholder="GGGG" oninput="validateDob()">
+          </div>
+        </div>
+        <div class="hint-row" id="dob-hint">
+          <div class="hint-dot"></div>
+          <span id="dob-text">Unesite datum rođenja da nastavite</span>
+        </div>
+      </div>
+      <div class="step-footer">
+        <div class="dots">
+          <div class="dot done"></div><div class="dot done"></div><div class="dot done"></div>
+          <div class="dot active"></div>
+          <div class="dot"></div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn-back" onclick="goTo(3,'back')">← Nazad</button>
+          <button class="btn-next" id="btn-4" disabled onclick="goTo(5)">
+            Nastavi <span class="arr">→</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Step 5: Weak topics ────────────────────────── -->
+    <div class="step-wrap" id="step-5">
+      <div class="step-header">
+        <div class="step-meta"><span class="cur">05</span> / 05 — Polazna tačka</div>
+        <div class="step-title">Koje oblasti su ti najteže?</div>
+        <div class="step-sub">Iskoristićemo ovo da predložimo odakle da počneš. Možeš izabrati više, ili preskočiti.</div>
+      </div>
+      <div class="step-body">
+        <div class="topics-grid" id="topics-grid"></div>
+      </div>
+      <div class="step-footer">
+        <div class="dots">
+          <div class="dot done"></div><div class="dot done"></div>
+          <div class="dot done"></div><div class="dot done"></div>
+          <div class="dot active"></div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn-back" onclick="goTo(4,'back')">← Nazad</button>
+          <button class="btn-next" onclick="finish()">
+            Završi <span class="arr">→</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success -->
+  <div class="success" id="success">
+    <div class="s-icon">✓</div>
+    <div class="s-title">Dobrodošao, <span id="s-name" style="color:var(--green)"></span>!</div>
+    <div class="s-sub">Nalog je kreiran i profil je podešen. Počinjemo odmah.</div>
+    <div class="summary" id="summary"></div>
+    <button class="btn-go" onclick="window.location.href='mathrs-ui.html'">Počni sa učenjem →</button>
+  </div>
+
+</div>
+<script>
+/* ── Data ─────────────────────────────────────────────────── */
+const topics = [
+  {id:1, name:'Skupovi i logika',      diff:'Lako',    dc:'color:var(--green)'},
+  {id:2, name:'Kvadratne jednačine',   diff:'Srednji', dc:'color:var(--orange)'},
+  {id:3, name:'Nejednačine',           diff:'Srednji', dc:'color:var(--orange)'},
+  {id:4, name:'Funkcije',              diff:'Srednji', dc:'color:var(--orange)'},
+  {id:5, name:'Trigonometrija',        diff:'Teško',   dc:'color:var(--red)'},
+  {id:6, name:'Kompleksni brojevi',    diff:'Teško',   dc:'color:var(--red)'},
+  {id:7, name:'Analitička geometrija', diff:'Teško',   dc:'color:var(--red)'},
+  {id:8, name:'Nizovi i redovi',       diff:'Srednji', dc:'color:var(--orange)'},
+  {id:9, name:'Kombinatorika',         diff:'Lako',    dc:'color:var(--green)'},
+  {id:10,name:'Verovatnoća',           diff:'Srednji', dc:'color:var(--orange)'},
+  {id:11,name:'Matrice',               diff:'Teško',   dc:'color:var(--red)'},
+  {id:12,name:'Derivacije',            diff:'Teško',   dc:'color:var(--red)'},
+  {id:13,name:'Integrali',             diff:'Teško',   dc:'color:var(--red)'},
+];
+
+const progPct = {1:0, 2:20, 3:40, 4:60, 5:80};
+let current = 1, weakTopics = new Set(), noneWeak = false;
+
+/* ── Build topics grid ───────────────────────────────────── */
+document.getElementById('topics-grid').innerHTML =
+  topics.map(t => `
+    <div class="topic-opt" id="to-${t.id}" onclick="pickTopic(${t.id})">
+      <div class="to-box"></div>
+      <div><div class="to-name">${t.name}</div><div class="to-diff" style="${t.dc}">${t.diff}</div></div>
+    </div>`).join('') +
+  `<div class="topic-opt none-opt" id="to-none" onclick="pickNone()">
+    <div class="to-box"></div>
+    <div>
+      <div class="to-name" style="color:var(--text2)">Nijedna oblast nije problematična</div>
+      <div class="to-diff">Počeću od početka</div>
+    </div>
+  </div>`;
+
+/* ── Password eye toggle ─────────────────────────────────── */
+const eyeOff = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`;
+const eyeOn  = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+
+function togglePw(inputId, btnId) {
+  const inp = document.getElementById(inputId);
+  const icon = document.getElementById(btnId+'-icon');
+  const isText = inp.type === 'text';
+  inp.type = isText ? 'password' : 'text';
+  icon.outerHTML = `<svg id="${btnId}-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${isText ? '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>' : '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>'}</svg>`;
+}
+
+/* ── Password strength ───────────────────────────────────── */
+function pwStrength(pw) {
+  let score = 0;
+  if (pw.length >= 8)  score++;
+  if (pw.length >= 12) score++;
+  if (/[A-Z]/.test(pw) && /[a-z]/.test(pw)) score++;
+  if (/[0-9]/.test(pw)) score++;
+  if (/[^A-Za-z0-9]/.test(pw)) score++;
+  return Math.min(4, score);
+}
+
+function updateStrengthBar(pw) {
+  const s = pwStrength(pw);
+  const labels = ['','Slaba','Srednja','Dobra','Jaka'];
+  const classes = ['','weak','medium','strong','strong'];
+  [1,2,3,4].forEach(i => {
+    const bar = document.getElementById('sb'+i);
+    bar.className = 'sbar' + (i <= s ? ' '+classes[s] : '');
+  });
+  const lbl = document.getElementById('strength-label');
+  lbl.textContent = pw.length ? labels[s] : '';
+  lbl.className = 'strength-label' + (pw.length ? ' '+classes[s] : '');
+}
+
+/* ── Step 1: Auth validation ────────────────────────────── */
+function validateAuth() {
+  const email = document.getElementById('inp-email').value.trim();
+  const pw    = document.getElementById('inp-pw').value;
+  const pw2   = document.getElementById('inp-pw2').value;
+  const hint  = document.getElementById('auth-hint');
+  const msg   = document.getElementById('auth-hint-text');
+  const btn   = document.getElementById('btn-1');
+
+  updateStrengthBar(pw);
+  hint.className = 'hint-row'; btn.disabled = true;
+
+  if (!email && !pw) { msg.textContent = 'Unesite email i lozinku da nastavite'; return; }
+
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  if (email && !emailOk) { hint.className='hint-row err'; msg.textContent='Email adresa nije ispravna'; return; }
+  if (!emailOk)          { msg.textContent='Unesite email adresu'; return; }
+
+  if (pw.length < 8) { msg.textContent = pw.length ? `Lozinka je prekratka — još ${8-pw.length} karaktera` : 'Unesite lozinku'; return; }
+
+  if (pw2 && pw !== pw2) { hint.className='hint-row err'; msg.textContent='Lozinke se ne podudaraju'; return; }
+  if (!pw2) { msg.textContent='Potvrdite lozinku'; return; }
+
+  hint.className = 'hint-row ok';
+  msg.textContent = 'Sve izgleda dobro — nastavi na sledeći korak ✓';
+  btn.disabled = false;
+}
+
+/* ── Step 2: Name ────────────────────────────────────────── */
+function validateName() {
+  const first = document.getElementById('inp-first').value.trim();
+  const last  = document.getElementById('inp-last').value.trim();
+  const hint  = document.getElementById('name-hint');
+  const msg   = document.getElementById('name-hint-text');
+  const btn   = document.getElementById('btn-2');
+
+  hint.className = 'hint-row'; btn.disabled = true;
+  if (!first && !last) { msg.textContent = 'Unesite ime i prezime da nastavite'; return; }
+  if (!first) { hint.className='hint-row err'; msg.textContent='Nedostaje ime'; return; }
+  if (!last)  { hint.className='hint-row err'; msg.textContent='Nedostaje prezime'; return; }
+
+  hint.className = 'hint-row ok';
+  msg.textContent = `Zdravo, ${first}! ✓`;
+  btn.disabled = false;
+}
+
+/* ── Step 3: Faculty ─────────────────────────────────────── */
+function validateFaculty() {
+  const sel = document.getElementById('fac-select');
+  const note = document.getElementById('fac-note');
+  const msg  = document.getElementById('fac-note-text');
+  sel.classList.add('chosen');
+  document.getElementById('btn-3').disabled = false;
+  note.className = 'select-note ok';
+  const msgs = { none:'U redu — prilagodićemo za opštu pripremu.', other:'Koristićemo standardni program. Možeš promeniti u podešavanjima.' };
+  msg.textContent = msgs[sel.value] || 'Arhiva ispita za ovaj fakultet je učitana ✓';
+}
+
+/* ── Step 4: DOB ─────────────────────────────────────────── */
+function validateDob() {
+  const d = parseInt(document.getElementById('dob-d').value);
+  const m = parseInt(document.getElementById('dob-m').value);
+  const y = parseInt(document.getElementById('dob-y').value);
+  const hint = document.getElementById('dob-hint');
+  const msg  = document.getElementById('dob-text');
+  const btn  = document.getElementById('btn-4');
+  hint.className = 'hint-row'; btn.disabled = true;
+
+  if (!d || !m || !y) { msg.textContent = 'Unesite datum rođenja da nastavite'; return; }
+  if (d<1||d>31||m<1||m>12) { hint.className='hint-row err'; msg.textContent='Neispravan datum'; return; }
+  if (y<1985||y>2012)       { hint.className='hint-row err'; msg.textContent=y<1985?'Datum previše u prošlosti':'Datum je u budućnosti'; return; }
+
+  const today = new Date();
+  let age = today.getFullYear() - y;
+  if (today.getMonth()<m-1||(today.getMonth()===m-1&&today.getDate()<d)) age--;
+  if (age<13||age>40) { hint.className='hint-row err'; msg.textContent='Datum nije validan'; return; }
+
+  hint.className = 'hint-row ok';
+  msg.textContent = `${age} godina ✓`;
+  btn.disabled = false;
+}
+
+/* ── Step 5: Topics ──────────────────────────────────────── */
+function pickTopic(id) {
+  if (noneWeak) {
+    noneWeak = false;
+    const ne = document.getElementById('to-none');
+    ne.classList.remove('sel'); ne.querySelector('.to-box').textContent = '';
+  }
+  const el = document.getElementById('to-'+id), bx = el.querySelector('.to-box');
+  if (weakTopics.has(id)) { weakTopics.delete(id); el.classList.remove('sel'); bx.textContent=''; }
+  else { weakTopics.add(id); el.classList.add('sel'); bx.textContent='✓'; }
+}
+function pickNone() {
+  weakTopics.clear();
+  document.querySelectorAll('.topic-opt:not(.none-opt)').forEach(el=>{el.classList.remove('sel');el.querySelector('.to-box').textContent='';});
+  noneWeak=!noneWeak;
+  const ne=document.getElementById('to-none');
+  ne.classList.toggle('sel',noneWeak); ne.querySelector('.to-box').textContent=noneWeak?'✓':'';
+}
+
+/* ── Navigation ──────────────────────────────────────────── */
+function goTo(next, dir) {
+  document.getElementById('step-'+current).classList.remove('visible','anim-in','anim-back');
+  document.getElementById('prog').style.width = progPct[next] + '%';
+  current = next;
+  const el = document.getElementById('step-'+next);
+  el.classList.add('visible');
+  void el.offsetWidth;
+  el.classList.add(dir === 'back' ? 'anim-back' : 'anim-in');
+}
+
+/* ── Finish ──────────────────────────────────────────────── */
+function finish() {
+  document.getElementById('prog').style.width = '100%';
+  document.getElementById('card').style.display = 'none';
+
+  const first  = document.getElementById('inp-first').value.trim();
+  const last   = document.getElementById('inp-last').value.trim();
+  const email  = document.getElementById('inp-email').value.trim();
+  const facEl  = document.getElementById('fac-select');
+  const facTxt = facEl.selectedIndex > 0 ? facEl.options[facEl.selectedIndex].text : '—';
+  const dob    = `${document.getElementById('dob-d').value}.${document.getElementById('dob-m').value}.${document.getElementById('dob-y').value}.`;
+  const weakList = noneWeak ? null : [...weakTopics].map(id=>topics.find(t=>t.id===id).name);
+
+  document.getElementById('s-name').textContent = first;
+  document.getElementById('summary').innerHTML = `
+    <div class="sum-row"><span class="sum-key">Email</span><span class="sum-val">${email}</span></div>
+    <div class="sum-row"><span class="sum-key">Ime i prezime</span><span class="sum-val">${first} ${last}</span></div>
+    <div class="sum-row"><span class="sum-key">Fakultet</span><span class="sum-val"><span class="stag green">${facTxt}</span></span></div>
+    <div class="sum-row"><span class="sum-key">Datum rođenja</span><span class="sum-val">${dob}</span></div>
+    <div class="sum-row">
+      <span class="sum-key">${weakList?'Slabe oblasti':'Polazna tačka'}</span>
+      <span class="sum-val">
+        ${weakList&&weakList.length
+          ? weakList.map(n=>`<span class="stag orange">${n}</span>`).join('')
+          : '<span class="stag green">Sve oblasti — od početka</span>'}
+      </span>
+    </div>`;
+
+  document.getElementById('success').classList.add('visible');
+}
+</script>
+</body>
+</html>
